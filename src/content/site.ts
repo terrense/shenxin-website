@@ -23,10 +23,10 @@ import { articles } from './writing';
 export const SITE_URL = 'https://shenxin-website.pages.dev';
 
 export const profile = {
-  // TODO(content): Chinese name pending confirmation — deliberately left as
-  // the Latin form rather than guessing at characters, since a wrong name is
-  // worse than an untranslated one.
-  name: { en: 'Xin Shen', zh: 'Xin Shen' } satisfies L,
+  // Chinese characters taken from the author's own presentation deck. Note
+  // that published papers carry "Shen Xin" (and "Шэнь Синь" in Russian
+  // venues) — citations must match the record, not this display name.
+  name: { en: 'Xin Shen', zh: '沈鑫' } satisfies L,
   role: { en: 'AI Systems Engineer', zh: 'AI 系统工程师' } satisfies L,
   location: { en: 'China · Remote-friendly', zh: '中国 · 支持远程' } satisfies L,
   email: 'slamshenxin@gmail.com',
@@ -38,40 +38,37 @@ export const profile = {
   } satisfies L,
 
   statement: {
-    en: 'Four years across agentic runtimes, reinforcement-learning post-training, robot manipulation and multimodal clinical AI. I work at the seam where a model stops being a benchmark number and starts being a system with latency budgets, failure modes and people depending on it.',
-    zh: '四年间横跨 Agent 运行时、强化学习后训练、机器人操作与医疗多模态 AI。我的工作发生在那个接缝处——模型不再只是一个榜单分数，而成为一个有延迟预算、有失效模式、有人依赖它的系统。',
+    en: 'A doctorate in integrated navigation from Bauman Moscow State Technical University, then agentic runtimes, RL post-training and field robotics. The through-line is state estimation: whether the system is a Kalman filter fusing pseudoranges or an agent fusing tool output, the hard part is the same — deciding how much to believe a measurement that might be wrong. I work at the seam where a model stops being a benchmark number and starts being a system with latency budgets, failure modes and people depending on it.',
+    zh: '在莫斯科鲍曼国立技术大学取得组合导航方向博士学位，此后转向 Agent 运行时、强化学习后训练与田间机器人。贯穿其中的主线是状态估计：无论系统是融合伪距的卡尔曼滤波，还是融合工具输出的 Agent，难点都是同一个——决定一个可能出错的量测应该被相信多少。我的工作发生在那个接缝处——模型不再只是一个榜单分数，而成为一个有延迟预算、有失效模式、有人依赖它的系统。',
   } satisfies L,
 
   /** Hero stat rail. Keep to four; they should be defensible. */
   stats: [
     {
-      value: '6',
-      provenance: 'spec',
-      countTo: 6,
-      label: { en: 'Systems documented', zh: '系统案例' },
-      detail: { en: 'Simulation to deployed hardware', zh: '从仿真到真机部署' },
+      value: '9',
+      provenance: 'measured',
+      countTo: 9,
+      label: { en: 'Peer-reviewed papers', zh: '同行评审论文' },
+      detail: { en: 'IEEE · Scopus · ВАК', zh: 'IEEE · Scopus · ВАК' },
     },
     {
-      value: '4',
+      value: '10',
       provenance: 'spec',
-      countTo: 4,
-      label: { en: 'Domains', zh: '技术领域' },
-      detail: {
-        en: 'Agentic · RL · Robotics · Multimodal',
-        zh: 'Agent · RL · 机器人 · 多模态',
-      },
+      countTo: 10,
+      label: { en: 'Systems documented', zh: '系统案例' },
+      detail: { en: 'Doctoral research to deployed hardware', zh: '从博士研究到真机部署' },
+    },
+    {
+      value: '1.10m',
+      provenance: 'measured',
+      label: { en: 'GNSS/INS position RMSE', zh: 'GNSS/INS 定位 RMSE' },
+      detail: { en: 'From 5.10 m GNSS-only, same trajectory', zh: '同一轨迹，纯 GNSS 为 5.10 m' },
     },
     {
       value: '8ms',
       provenance: 'spec',
       label: { en: 'Control loop', zh: '控制周期' },
       detail: { en: 'Real-time arm feedback, CR-series', zh: 'CR 系列机械臂实时反馈' },
-    },
-    {
-      value: '450M',
-      provenance: 'spec',
-      label: { en: 'Smallest useful VLA', zh: '最小可用 VLA' },
-      detail: { en: 'SmolVLA, trainable on one consumer GPU', zh: 'SmolVLA，单消费级显卡可训' },
     },
   ] satisfies Metric[],
 
