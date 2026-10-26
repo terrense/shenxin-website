@@ -21,6 +21,9 @@ id_rsa*
 .npmrc
 .wrangler
 
+# Local tooling output (Claude Code hooks write this; not part of the site)
+WORKLOG.md
+
 # Editor / OS
 .DS_Store
 Thumbs.db
