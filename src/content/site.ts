@@ -168,6 +168,17 @@ export const capabilities: Array<{ group: L; items: string[] }> = [
     ],
   },
   {
+    group: { en: 'Navigation & state estimation', zh: '导航与状态估计' },
+    items: [
+      'Kalman / cubature filtering',
+      'Robust & adaptive filters',
+      'Tightly coupled GNSS/INS',
+      'Visual-inertial SLAM',
+      'Point · line · semantic features',
+      'Observability analysis',
+    ],
+  },
+  {
     group: { en: 'Serving & infra', zh: '推理与基础设施' },
     items: [
       'vLLM · SGLang',
@@ -203,6 +214,33 @@ export const timeline: Array<{ period: string; title: L; body: L }> = [
     body: {
       en: 'Perception, decision and manipulation for an agricultural robot that had to work in sunlight, dust and wind — not in a lab.',
       zh: '为农业机器人构建感知、决策与操作系统——工作环境是阳光、灰尘与风，而不是实验室。',
+    },
+  },
+  {
+    period: '2020 — 2025',
+    title: {
+      en: 'PhD, Bauman Moscow State Technical University',
+      zh: '博士，莫斯科鲍曼国立技术大学',
+    },
+    body: {
+      en: 'Chinese government scholarship. Camera/GPS/IMU tightly coupled navigation: robust and adaptive nonlinear filtering, observability analysis, then indoor visual SLAM fusing point, line and semantic landmarks. Nine peer-reviewed papers, and fieldwork during an internship at a Chinese Academy of Sciences institute.',
+      zh: '国家公派。相机/GPS/IMU 紧组合导航方向：鲁棒与自适应非线性滤波、可观测性分析，后期转向融合点、线与语义路标的室内视觉 SLAM。发表九篇同行评审论文，并在中科院某研究所实习期间参与实物实验。',
+    },
+  },
+  {
+    period: '2018 — 2020',
+    title: { en: 'MSc, Bauman Moscow State Technical University', zh: '硕士，莫斯科鲍曼国立技术大学' },
+    body: {
+      en: 'Intelligent control systems and integrated navigation. Thesis on GPS/IMU integration — the starting point for everything above.',
+      zh: '智能控制系统与组合导航方向。硕士课题为 GPS/IMU 组合导航算法——上述一切的起点。',
+    },
+  },
+  {
+    period: '2014 — 2018',
+    title: { en: 'BEng, Beijing Institute of Technology', zh: '学士，北京理工大学' },
+    body: {
+      en: 'Armoured vehicle engineering. Final-year project on fuzzy-logic control of a mobile robot — the first time a controller I wrote had to move something heavy.',
+      zh: '装甲车辆工程专业。毕业设计为移动机器人的模糊逻辑控制——那是我写的控制器第一次需要驱动一个沉重的实体。',
     },
   },
 ];
