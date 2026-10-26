@@ -1,0 +1,50 @@
+{
+  // ===========================================================================
+  // Cloudflare Workers Static Assets configuration.
+  //
+  // This file is committed ON PURPOSE. Without it, `wrangler deploy` detects an
+  // unconfigured project and runs its interactive setup, which in a CI build
+  // silently falls back to defaults and regenerates a config on every deploy.
+  // Pinning it here makes deploys deterministic and reviewable.
+  //
+  // ---------------------------------------------------------------------------
+  // SPA ROUTING — there must be exactly one mechanism
+  // ---------------------------------------------------------------------------
+  // This is a client-side-routed SPA: the server has no file at
+  // /projects/vla-lab, so unmatched paths must serve index.html with a 200.
+  //
+  // On Workers Static Assets that is `not_found_handling` below, and ONLY that.
+  // The project previously also shipped a `public/_redirects` containing
+  // `/*  /index.html  200`, which is the Cloudflare *Pages* idiom. Workers
+  // rejects it:
+  //
+  //   Invalid _redirects configuration: Line 4: Infinite loop detected in this
+  //   rule. This would cause a redirect to strip `.html` or `/index` and end up
+  //   triggering this rule again. [code: 100324]
+  //
+  // Workers Assets strips `/index` and `.html` when resolving a path, so a
+  // catch-all pointing AT `/index.html` re-enters itself. That file has been
+  // deleted. Do not reintroduce a catch-all redirect while this setting exists.
+  // ===========================================================================
+
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "shenxin-website",
+  "compatibility_date": "2026-10-19",
+
+  "assets": {
+    // Vite's build output. Must match `Build output directory` in the
+    // Cloudflare dashboard and the `build` script in package.json.
+    "directory": "./dist",
+
+    // Serves index.html with a 200 for any path that is not a real file, so
+    // deep links and hard refreshes work. This replaces the _redirects rule.
+    "not_found_handling": "single-page-application"
+  },
+
+  // No "main": this deploys static assets only. There is no Worker script,
+  // no server-side code, and nothing that could need a secret.
+
+  "observability": {
+    "enabled": true
+  }
+}

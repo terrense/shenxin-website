@@ -11,6 +11,13 @@ a database, or an API key.
 | **Build command**      | `npm run build` |
 | **Build output directory** | `dist`      |
 
+> **Workers or Pages?** Cloudflare now routes most new Git-connected projects
+> through **Workers Static Assets** (the build log ends with
+> `npx wrangler deploy`) rather than classic Pages. This repository is
+> configured for Workers via the committed `wrangler.jsonc`, and the two
+> settings above are identical either way. The one practical difference is SPA
+> routing — see Part 7.
+
 ---
 
 ## Part 0 — What you end up with
@@ -128,6 +135,7 @@ When it finishes you get a link like `https://shenxin-website.pages.dev`.
 | `Output directory "build" not found`     | The output directory must be `dist`, not `build`.           |
 | `[assets] ... not found under public/`   | `src/content/assets.ts` points at an image you have not added. Add the file or remove the entry. |
 | `npm ERR! ... package-lock.json`         | Commit `package-lock.json` — it must be in the repository.  |
+| `Invalid _redirects ... Infinite loop detected [code: 100324]` | A `public/_redirects` contains `/*  /index.html  200`. Delete it; `wrangler.jsonc` already handles SPA routing (Part 7). |
 
 To retry after changing a setting: **Deployments** → **…** on the failed
 deployment → **Retry deployment**.
@@ -193,16 +201,37 @@ You do **not** need this — `pages.dev` is permanent and free. When you want on
 These are already written and need no changes. Knowing what they do helps when
 something looks wrong:
 
-- **`public/_redirects`** — one line: `/*  /index.html  200`. This site is a
-  single-page app, so the server has no file at `/projects/vla-lab`. This tells
-  Cloudflare to serve the app shell for any unmatched path and let the app
-  handle routing. **Without it, reloading any page except the home page
+- **`wrangler.jsonc`** — the deploy configuration, committed on purpose.
+  It sets the asset directory (`./dist`) and, importantly,
+  `not_found_handling: "single-page-application"`. This site is a client-side
+  routed SPA, so the server has no file at `/projects/vla-lab`; that setting
+  serves `index.html` with a 200 for any unmatched path so deep links and hard
+  refreshes work. **Without it, reloading any page except the home page
   returns 404.**
+
+  There must be exactly **one** SPA fallback mechanism. See the note below
+  about `_redirects`.
 
 - **`public/_headers`** — security headers (a Content-Security-Policy, frame
   and MIME-type protections) plus cache rules: hashed assets in `/assets/*` are
   cached for a year, `index.html` is never cached so a new deploy is visible
   immediately.
+
+> **Do not add a `public/_redirects` with `/*  /index.html  200`.**
+>
+> That is the Cloudflare *Pages* idiom. This project deploys via **Workers
+> Static Assets**, which resolves paths by stripping `/index` and `.html` — so
+> a catch-all pointing at `/index.html` re-enters itself and the deploy is
+> rejected:
+>
+> ```
+> Invalid _redirects configuration: Line 4: Infinite loop detected in this
+> rule. [code: 100324]
+> ```
+>
+> The file was removed for this reason. `not_found_handling` already does the
+> job. A `_redirects` file is still fine for *real* redirects (301/302) — just
+> never a catch-all to the app shell.
 
 - **`public/robots.txt`** and the generated **`dist/sitemap.xml`** — let search
   engines find every case study. The sitemap is rebuilt from the project files
