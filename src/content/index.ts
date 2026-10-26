@@ -5,21 +5,34 @@ import { vlaLab } from './projects/vla-lab';
 import { eyeInHandCalibration } from './projects/eye-in-hand-calibration';
 import { clinicalMultimodalAgent } from './projects/clinical-multimodal-agent';
 import { lilbot } from './projects/lilbot';
+import { gnssInsNavigation } from './projects/gnss-ins-navigation';
+import { visualSlam } from './projects/visual-slam';
+import { humanRobotCollaboration } from './projects/human-robot-collaboration';
+import { diffusionPolicyOptimization } from './projects/diffusion-policy-optimization';
 
 /**
  * Declared order drives both the project index and the home bento grid.
  *
- * The bento tiling assumes the featured footprints appear in the order
- * `anchor, tall, wide, cell, cell, wide` — see `bentoSpan` in src/lib/utils.ts.
- * Reorder freely, but re-check the grid fill on a wide screen afterwards.
+ * Only `featured` projects reach the bento grid, and their footprints must
+ * appear in the order `anchor, tall, wide, cell, cell, wide, wide` for the
+ * six-column grid to tile without holes — see `bentoSpan` in src/lib/utils.ts.
+ * Reorder freely, but re-check the fill on a wide screen afterwards.
+ *
+ * Ordering principle: the work that is most defensible leads. The doctoral
+ * navigation research and the field robot carry measured, published results;
+ * the exploratory pieces sit at the end and are not featured.
  */
 export const projects: Project[] = [
-  postTrainingPipeline, // anchor
-  grapeThinningRobot, // tall
-  vlaLab, // wide
-  eyeInHandCalibration, // cell
-  clinicalMultimodalAgent, // cell
-  lilbot, // wide
+  postTrainingPipeline, // featured · anchor
+  grapeThinningRobot, // featured · tall
+  gnssInsNavigation, // featured · wide
+  eyeInHandCalibration, // featured · cell
+  clinicalMultimodalAgent, // featured · cell
+  lilbot, // featured · wide
+  vlaLab, // featured · wide
+  visualSlam, // featured · cell
+  humanRobotCollaboration,
+  diffusionPolicyOptimization,
 ];
 
 export const featuredProjects = projects.filter((p) => p.featured);
