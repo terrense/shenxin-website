@@ -120,12 +120,67 @@ export const visualSlam: Project = {
           ],
         },
         {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/plvins-rviz.webp',
+          mediaKind: 'capture',
+          ratio: '2048 / 1152',
+          alt: {
+            en: 'RViz visualising a point-line visual-inertial SLAM session, with red line landmarks, green point landmarks, the pose-graph trajectory, and two feature-tracker image panes.',
+            zh: 'RViz 可视化点线视觉惯性 SLAM 运行过程：红色线路标、绿色点路标、位姿图轨迹，以及两个特征跟踪图像窗格。',
+          },
+          caption: {
+            en: 'A live session. Red segments are line landmarks, green dots are point landmarks, and the black curve is the estimated pose-graph trajectory. The two panes on the left show what each tracker sees — the upper one matching lines across frames, the lower one points. The structure of the scene is carried almost entirely by the red.',
+            zh: '一次实时运行。红色线段是线路标，绿色点是点路标，黑色曲线是估计出的位姿图轨迹。左侧两个窗格显示各跟踪器所见——上方跨帧匹配直线，下方匹配点。场景的结构几乎完全由红色部分承载。',
+          },
+        },
+        {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/indoor-robot-platform.webp',
+          mediaKind: 'capture',
+          ratio: '1280 / 1042',
+          alt: {
+            en: 'A small four-wheeled indoor research robot carrying a spinning LiDAR, a camera, an onboard compute board and a battery on an open laser-cut chassis.',
+            zh: '一台小型四轮室内研究机器人：开放式激光切割底盘上搭载旋转激光雷达、相机、板载计算单元与电池。',
+          },
+          caption: {
+            en: 'The platform the work ran on. Deliberately open-frame: every cable is reachable, which matters when the thing you are debugging is an extrinsic calibration and you need to measure where a sensor physically sits.',
+            zh: '承载这项工作的平台。刻意采用开放式结构：每根线缆都触手可及——当你要调试的是外参标定、需要实地量一个传感器究竟装在哪里时，这一点很重要。',
+          },
+        },
+        {
           kind: 'callout',
           tone: 'note',
           title: { en: 'Scope', zh: '范围说明' },
           body: {
-            en: 'This is doctoral research, evaluated on an indoor mobile-robot platform. It is reported here as an investigation rather than a deployed product, and no benchmark numbers are claimed on this page.',
-            zh: '这是在室内移动机器人平台上评测的博士研究工作。此处以研究探索的形式呈现，而非已部署的产品，本页也不声称任何基准测试数值。',
+            en: 'This is doctoral research, evaluated on the indoor mobile-robot platform shown above. It is reported here as an investigation rather than a deployed product, and no benchmark numbers are claimed on this page.',
+            zh: '这是在上图所示室内移动机器人平台上评测的博士研究工作。此处以研究探索的形式呈现，而非已部署的产品，本页也不声称任何基准测试数值。',
+          },
+        },
+      ],
+    },
+    {
+      id: 'experiments',
+      title: { en: 'Experiments', zh: '实验' },
+      lede: {
+        en: 'Replacing a classical detector is only worth it if the keypoints are better placed.',
+        zh: '替换经典检测器，只有在关键点分布更好时才值得。',
+      },
+      blocks: [
+        {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/convpoint-vs-orb.webp',
+          mediaKind: 'diagram',
+          ratio: '1912 / 1086',
+          alt: {
+            en: 'A figure showing the ConvPoint encoder–decoder architecture on the left, and on the right the same indoor scene with ORB keypoints above and ConvPoint keypoints below.',
+            zh: '左侧为 ConvPoint 编码器-解码器结构图，右侧为同一室内场景下 ORB（上）与 ConvPoint（下）的关键点分布对比。',
+          },
+          caption: {
+            en: 'A shared encoder feeds two decoders — one producing interest points, one producing descriptors — the same role ORB and SURF play classically. The comparison on the right is the actual argument: ORB piles its keypoints onto the few high-contrast clusters in the scene, while ConvPoint spreads them across surfaces that have structure but little texture. Evenly distributed keypoints are what keeps the pose well-conditioned. (Figure labels are in Russian — it is reproduced from the original dissertation material.)',
+            zh: '一个共享编码器接出两个解码器——一个输出兴趣点，一个输出描述子——承担 ORB 与 SURF 在经典方法中的角色。右侧的对比才是真正的论据：ORB 把关键点堆积在场景中少数高对比度区域，而 ConvPoint 将其分散到那些有结构但缺乏纹理的表面上。关键点分布均匀，才能让位姿求解保持良态。（图中标注为俄语——该图复现自原始学位论文材料。）',
           },
         },
       ],
