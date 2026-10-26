@@ -11,8 +11,8 @@ export const humanRobotCollaboration: Project = {
     zh: '在你开口之前就知道你手里拿着哪把工具的机器人',
   },
   summary: {
-    en: 'Perception for an industrial collaborative cell: detecting people, recognising and tracking the tool in an operator’s hand under occlusion, and supervising the whole workspace from a single RGB-D camera so the safety logic reasons about one consistent scene.',
-    zh: '面向工业协作单元的感知系统：检测人员、在遮挡条件下识别并跟踪操作者手中的工具，并以单台 RGB-D 相机监督整个工作空间，使安全逻辑面对的是一个一致的场景。',
+    en: 'Perception for a collaborative cell built around a KUKA LBR iiwa 14 handing medical instruments to an operator: detecting people, recognising and tracking the tool in the operator’s hand under occlusion, and supervising the workspace with RGB-D so the safety logic reasons about one consistent scene.',
+    zh: '面向协作单元的感知系统——该单元以 KUKA LBR iiwa 14 向操作者递送医疗器械：检测人员、在遮挡条件下识别并跟踪操作者手中的工具，并以 RGB-D 监督工作空间，使安全逻辑面对的是一个一致的场景。',
   },
   domain: 'robotics',
   alsoIn: ['embodied'],
@@ -23,7 +23,16 @@ export const humanRobotCollaboration: Project = {
   },
   status: 'shipped',
   accent: 'ember',
-  stack: ['YOLOv5', 'Attention mechanisms', 'RGB-D', 'Object tracking', 'PyTorch', 'OpenCV', 'ROS'],
+  stack: [
+    'KUKA LBR iiwa 14',
+    'YOLOv5',
+    'Attention mechanisms',
+    'RGB-D',
+    'Object tracking',
+    'PyTorch',
+    'OpenCV',
+    'ROS',
+  ],
   highlights: [
     {
       value: '4',
@@ -78,6 +87,21 @@ export const humanRobotCollaboration: Project = {
       id: 'architecture',
       title: { en: 'System architecture', zh: '系统架构' },
       blocks: [
+        {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/collaborative-cell.webp',
+          mediaKind: 'capture',
+          ratio: '1513 / 741',
+          alt: {
+            en: 'Annotated photograph of the collaborative cell: a KUKA LBR iiwa 14 with a wrist-mounted RGB-D camera, a second RGB-D camera observing a tray of medical instruments, an operator wearing a microphone, and the experimenter workstation.',
+            zh: '协作单元的标注照片：腕部装有 RGB-D 相机的 KUKA LBR iiwa 14、另一台观测医疗器械托盘的 RGB-D 相机、佩戴麦克风的操作者，以及实验员工作站。',
+          },
+          caption: {
+            en: 'The cell as built. One RGB-D camera on the manipulator wrist, a second observing the instrument tray, the operator working inside the robot’s reach rather than behind a fence. The instruments are surgical — which is why "hand the right tool at the right moment" is the task, and why a confident wrong identification is not a harmless error. The operator’s face is masked in the source material.',
+            zh: '实际搭建的工作单元。一台 RGB-D 相机位于机械臂腕部，另一台观测器械托盘，操作者在机器人可达范围之内作业，而非隔着围栏。这些是外科器械——这正是"在正确的时刻递上正确的工具"成为任务目标的原因，也是"自信的错误识别"并非无害失误的原因。原始素材中操作者面部已做遮挡处理。',
+          },
+        },
         {
           kind: 'bullets',
           items: [
