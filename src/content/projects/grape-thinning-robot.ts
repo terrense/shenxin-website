@@ -107,6 +107,21 @@ export const grapeThinningRobot: Project = {
           },
         },
         {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/sim-greenhouse.webp',
+          mediaKind: 'capture',
+          ratio: '796 / 599',
+          alt: {
+            en: 'Simulated greenhouse interior with trellis posts, overhead wires, hanging grape clusters and scattered ground debris.',
+            zh: '仿真温室内部：棚架立柱、顶部钢丝、悬垂果串与地面散落杂物。',
+          },
+          caption: {
+            en: 'The simulated greenhouse the planner and the collision suite run against. The clutter on the ground is deliberate — a floor that is perfectly flat makes a navigation stack look better than it is.',
+            zh: '规划器与碰撞测试集所针对的仿真温室。地面杂物是刻意加入的——一个绝对平整的地面，会让导航栈看起来比实际更好。',
+          },
+        },
+        {
           kind: 'prose',
           body: {
             en: 'The system is four independent OS processes — perception, decision engine, navigation, control — communicating over `iceoryx2`, a zero-copy shared-memory bus. That choice is the architectural core, so it is worth being precise about why. A 2-megapixel stereo pair at 30 fps is roughly 350 MB/s. Serialising that through a conventional message bus means a memcpy per hop and allocator pressure that shows up as jitter in a loop that must not jitter. With shared memory, perception writes the frame once and the consumers read the same pages.',
@@ -220,6 +235,43 @@ match targets.take_latest() {
           },
         },
         {
+          kind: 'prose',
+          body: {
+            en: 'Before any of the manipulation work can run, the robot has to know where it is and cover the block without missing a row. Mapping and coverage were therefore validated first, in the greenhouse scene above.',
+            zh: '在任何操作任务运行之前，机器人必须先知道自己在哪里，并且能不漏行地覆盖整个地块。因此建图与覆盖是最先被验证的部分，场景即上方的温室模型。',
+          },
+        },
+        {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/orchard-slam-map.webp',
+          mediaKind: 'capture',
+          ratio: '1189 / 637',
+          alt: {
+            en: 'Point-cloud map of the greenhouse, shown as a top view coloured by height and a south-west perspective view.',
+            zh: '温室点云地图：左为按高度着色的俯视图，右为西南方向的透视图。',
+          },
+          caption: {
+            en: 'LiDAR map built from 1,919 scans — 57.9 M raw points reduced to 3.40 M at a 30 mm voxel, over a 64.0 m trajectory. Colour encodes height; the trellis posts and the canopy arch are both resolved.',
+            zh: '由 1,919 帧扫描构建的激光地图——5790 万原始点经 30 mm 体素降采样至 340 万点，轨迹长 64.0 m。颜色表示高度，棚架立柱与拱形树冠均被清晰还原。',
+          },
+        },
+        {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/coverage-path-plan.webp',
+          mediaKind: 'capture',
+          ratio: '919 / 839',
+          alt: {
+            en: 'Coverage path plan showing a boustrophedon route through five crop rows inside the mapped boundary.',
+            zh: '覆盖路径规划图：在已建图边界内，沿五条作物行往复行进的路线。',
+          },
+          caption: {
+            en: 'Coverage plan derived from that map: five rows at x = 1.20, 3.11, 5.59, 8.22 and 10.29 m, spacings of 0.96 / 1.24 / 1.32 / 1.04 m, a 63.6 m route, about 182 s. The spacings are uneven because real trellis rows are — planning against the measured map rather than a nominal pitch is the whole point.',
+            zh: '基于该地图生成的覆盖方案：五条行位于 x = 1.20、3.11、5.59、8.22、10.29 m，间距依次为 0.96 / 1.24 / 1.32 / 1.04 m，路径长 63.6 m，用时约 182 s。间距不均是因为真实棚架本就不均——按实测地图而非名义行距来规划，正是这件事的意义所在。',
+          },
+        },
+        {
           kind: 'bullets',
           items: [
             {
@@ -272,6 +324,26 @@ match targets.take_latest() {
               label: { en: 'Peduncle cuts in trials', zh: '试验中剪断果梗次数' },
               detail: { en: 'The failure mode that mattered', zh: '真正要紧的那种失效' },
             },
+            // Read straight off the figures in the Experiments section above,
+            // so these three are measured rather than illustrative.
+            {
+              value: '1,919',
+              provenance: 'measured',
+              label: { en: 'Scans in the map', zh: '建图扫描帧数' },
+              detail: { en: '57.9 M points → 3.40 M at 30 mm voxel', zh: '5790 万点 → 30 mm 体素后 340 万点' },
+            },
+            {
+              value: '64.0m',
+              provenance: 'measured',
+              label: { en: 'Mapping trajectory', zh: '建图轨迹长度' },
+              detail: { en: 'Single pass through the block', zh: '单次走完整个地块' },
+            },
+            {
+              value: '182s',
+              provenance: 'measured',
+              label: { en: 'Coverage run', zh: '覆盖作业耗时' },
+              detail: { en: '63.6 m across five trellis rows', zh: '63.6 m，跨越五条棚架行' },
+            },
           ],
         },
         {
@@ -279,6 +351,41 @@ match targets.take_latest() {
           body: {
             en: 'The robot is slower than a skilled worker and will be for some time. That was never the near-term bar — the bar was operating unattended for a full row without a destructive mistake, and recovering gracefully from the ordinary chaos of an outdoor environment: a camera dropping out, a gust moving the canopy mid-approach, GPS degrading under the trellis.',
             zh: '这台机器人比熟练工人慢，而且短期内还会慢。但速度从来不是近期的衡量标准——标准是：在无人看管的情况下完整走完一行而不发生破坏性失误，并能从户外环境的日常混乱中优雅恢复：相机掉线、接近过程中一阵风吹动了树冠、棚架下 GPS 精度劣化。',
+          },
+        },
+      ],
+    },
+    {
+      id: 'demo',
+      title: { en: 'Demo', zh: '演示' },
+      lede: {
+        en: 'Simulation on one screen, live SLAM on the other, in the same run.',
+        zh: '一块屏幕跑仿真，另一块跑实时 SLAM，同一次运行。',
+      },
+      blocks: [
+        {
+          kind: 'media',
+          type: 'video',
+          src: '/assets/real/video/orchard-sim-slam.mp4',
+          poster: '/assets/real/video/orchard-sim-slam-poster.webp',
+          mediaKind: 'capture',
+          ratio: '16 / 9',
+          alt: {
+            en: 'Handheld recording of two monitors: a simulated greenhouse with the robot driving on the left, and the accumulating LiDAR point-cloud map in RViz on the right.',
+            zh: '手持拍摄的双显示器画面：左侧为仿真温室中行驶的机器人，右侧为 RViz 中逐步累积的激光点云地图。',
+          },
+          caption: {
+            en: 'A full run, filmed off the monitors rather than screen-captured — the simulator and the mapping stack are running at the same time, which is the point: the map on the right is being built from the robot you can see moving on the left.',
+            zh: '一次完整运行，用手机对着显示器拍摄而非录屏——仿真器与建图栈同时运行，这正是要展示的：右侧的地图，正是由左侧那台正在移动的机器人实时构建的。',
+          },
+        },
+        {
+          kind: 'callout',
+          tone: 'note',
+          title: { en: 'About this recording', zh: '关于这段录像' },
+          body: {
+            en: 'Genuine footage of the system running, filmed handheld off two monitors — so expect glare, moiré and camera shake. It is here because it is real, not because it is polished. A screen capture of the same run would be sharper and is the obvious next improvement.',
+            zh: '这是系统真实运行的影像，用手机手持对着两块显示器拍摄——因此有反光、摩尔纹与抖动。放它上来是因为它真实，而不是因为它精致。同一次运行的屏幕录制会清晰得多，这也是下一步最该做的改进。',
           },
         },
       ],

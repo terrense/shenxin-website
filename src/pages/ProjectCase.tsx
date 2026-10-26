@@ -10,7 +10,7 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { DomainTag, StatusPill, Tag } from '@/components/primitives/Tag';
 import { ArrowLeft, ArrowRight, linkKindIcon } from '@/components/primitives/Icons';
 import { ProvenanceMark, ProvenanceNote } from '@/components/primitives/Provenance';
-import { CoverImage } from '@/components/primitives/CoverImage';
+import { CoverImage, CoverNote } from '@/components/primitives/CoverImage';
 import { coverFor } from '@/content/assets';
 import { CaseBlockView } from '@/components/sections/CaseBlocks';
 import { accentClasses, cn, externalLinkProps } from '@/lib/utils';
@@ -55,12 +55,17 @@ export default function ProjectCase() {
           </div>
 
           {cover && (
-            <CoverImage
-              cover={cover}
-              preferWide
-              eager
-              className="mt-7 aspect-[21/9] rounded-2xl border border-line"
-            />
+            <figure className="mt-7">
+              <CoverImage
+                cover={cover}
+                variant="full"
+                eager
+                className="aspect-[16/9] rounded-2xl border border-line"
+              />
+              <figcaption>
+                <CoverNote cover={cover} className="max-w-3xl" />
+              </figcaption>
+            </figure>
           )}
 
           <h1 className="mt-6 max-w-4xl font-display text-[clamp(2rem,5.2vw,3.5rem)] leading-[1.06] font-semibold tracking-[-0.03em]">

@@ -259,14 +259,19 @@ export function CaseBlockView({ block }: { block: CaseBlock }) {
             {block.type === 'video' && (
               // No autoplay: an unprompted moving image is the single most
               // disruptive thing a case study can do.
+              //
+              // preload="none" with a poster means the page costs zero video
+              // bytes until someone presses play — the poster is ~57 KB
+              // against a ~5.7 MB file. `object-contain` because cropping a
+              // demo recording can cut away the thing being demonstrated.
               <video
                 src={block.src}
                 poster={block.poster}
                 controls
-                preload="metadata"
+                preload="none"
                 playsInline
                 aria-label={tl(block.alt)}
-                className="size-full object-cover"
+                className="size-full bg-black object-contain"
               />
             )}
             {block.type === 'embed' && (

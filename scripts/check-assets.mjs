@@ -30,7 +30,7 @@ const code = source
   .filter((line) => !line.trim().startsWith('//'))
   .join('\n');
 
-const referenced = [...code.matchAll(/(?:src|wide|poster)\s*:\s*'(\/[^']+)'/g)].map(
+const referenced = [...code.matchAll(/(?:src|thumb|wide|poster)\s*:\s*'(\/[^']+)'/g)].map(
   (m) => m[1],
 );
 

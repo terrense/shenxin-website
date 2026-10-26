@@ -115,10 +115,14 @@ export type MediaKind = 'capture' | 'concept' | 'diagram';
  * before artwork exists.
  */
 export type ProjectCover = {
-  /** Path under /public, e.g. `/assets/covers/vla-lab.webp`. */
+  /** Full-resolution image, used on the case-study header. */
   src: string;
-  /** Optional higher-resolution or wider crop for the case-study header. */
-  wide?: string;
+  /**
+   * Downscaled variant for cards. The home page renders six covers at once,
+   * so serving full-resolution art there is the difference between ~1.5 MB
+   * and ~370 KB. Falls back to `src` when absent.
+   */
+  thumb?: string;
   alt: L;
   mediaKind: MediaKind;
   /**
@@ -126,6 +130,20 @@ export type ProjectCover = {
    * narrow screens; this keeps the subject in frame.
    */
   focus?: string;
+  /**
+   * A visible caveat rendered beneath the image on the case-study page.
+   *
+   * The "Concept visualization" badge says the image is an illustration. This
+   * says *how it differs from the real system* — which is a separate and
+   * sharper problem. Concept art routinely contradicts the case study next to
+   * it: depicting the wrong task, the wrong hardware, or invented on-screen
+   * values. A reader who notices the mismatch before you admit it stops
+   * trusting the whole page.
+   *
+   * Required by lint-by-convention for any `mediaKind: 'concept'` image whose
+   * content disagrees with the surrounding text.
+   */
+  note?: L;
 };
 
 /**

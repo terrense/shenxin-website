@@ -79,10 +79,10 @@ export function ProjectCard({
             <CoverImage
               cover={cover}
               eager={index === 0}
-              className={cn(
-                '-mx-5 -mt-5 mb-5 sm:-mx-6 sm:-mt-6 lg:-mx-7 lg:-mt-7',
-                isAnchor ? 'aspect-[21/9]' : 'aspect-[16/9]',
-              )}
+              // 16:9 on every tile, matching the source artwork. A wider crop
+              // on the anchor tile cut the top and bottom off the dashboard
+              // images, where the UI is the content.
+              className="-mx-5 -mt-5 mb-5 aspect-[16/9] sm:-mx-6 sm:-mt-6 lg:-mx-7 lg:-mt-7"
             />
           )}
           <div className="mb-5 flex items-start justify-between gap-4">
