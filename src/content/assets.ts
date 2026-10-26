@@ -66,6 +66,47 @@ export const projectCovers: Record<string, ProjectCover> = {
     },
   },
 
+  // Real captures from the doctoral work, taken from the author's own deck.
+  'gnss-ins-navigation': {
+    src: '/assets/real/gnss-error-plots.webp',
+    thumb: '/assets/real/thumbnails/gnss-error-plots.webp',
+    mediaKind: 'capture',
+    alt: {
+      en: 'Two MATLAB figures showing GNSS/INS position and velocity error against GPS time on the east, north and up axes, each annotated with its RMS value.',
+      zh: '两幅 MATLAB 图窗，展示 GNSS/INS 在东、北、天三轴上的定位与速度误差随 GPS 时间的变化，并各自标注 RMS 值。',
+    },
+  },
+
+  'visual-slam': {
+    src: '/assets/real/plvins-rviz.webp',
+    thumb: '/assets/real/thumbnails/plvins-rviz.webp',
+    mediaKind: 'capture',
+    alt: {
+      en: 'RViz showing a point-line visual-inertial SLAM session: red line landmarks, green point landmarks and the estimated pose-graph trajectory, with tracked feature images alongside.',
+      zh: 'RViz 中的点线视觉惯性 SLAM 运行画面：红色线路标、绿色点路标与估计出的位姿图轨迹，旁侧为特征跟踪图像。',
+    },
+  },
+
+  'human-robot-collaboration': {
+    src: '/assets/real/collaborative-cell.webp',
+    thumb: '/assets/real/thumbnails/collaborative-cell.webp',
+    mediaKind: 'capture',
+    alt: {
+      en: 'Annotated photograph of a collaborative robotic cell: a KUKA LBR iiwa 14 manipulator, two RGB-D cameras, a tray of medical instruments, an operator with a microphone, and the experimenter workstation.',
+      zh: '协作机器人单元的标注照片：KUKA LBR iiwa 14 机械臂、两台 RGB-D 相机、一盘医疗器械、佩戴麦克风的操作者，以及实验员工作站。',
+    },
+  },
+
+  'diffusion-policy-optimization': {
+    src: '/assets/real/diffusion-ppo-architecture.webp',
+    thumb: '/assets/real/thumbnails/diffusion-ppo-architecture.webp',
+    mediaKind: 'diagram',
+    alt: {
+      en: 'Architecture diagram of a diffusion-augmented PPO loop: data collection, virtual trajectory generation, diffusion model training and update, synthetic and augmented datasets, and the PPO actor–critic network.',
+      zh: 'Diffusion 增强 PPO 闭环的架构图：数据采集、虚拟轨迹生成、扩散模型训练与更新、合成与扩充数据集，以及 PPO actor–critic 网络。',
+    },
+  },
+
   'vla-lab': {
     src: '/assets/isaac-lab-vineyard-concept.webp',
     thumb: '/assets/thumbnails/isaac-lab-vineyard-concept.webp',
