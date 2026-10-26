@@ -96,6 +96,21 @@ export const diffusionPolicyOptimization: Project = {
       },
       blocks: [
         {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/diffusion-ppo-architecture.webp',
+          mediaKind: 'diagram',
+          ratio: '1249 / 636',
+          alt: {
+            en: 'Architecture diagram with five grouped stages: data collection, virtual trajectory generation, a PPO actor–critic network, synthetic and augmented datasets, and a diffusion model with its update path.',
+            zh: '架构图，包含五组阶段：数据采集、虚拟轨迹生成、PPO actor–critic 网络、合成与扩充数据集，以及带更新路径的扩散模型。',
+          },
+          caption: {
+            en: 'The loop in full. Trajectories flow clockwise from the environment through generation and behavioural cloning into the diffusion model; synthetic samples flow back into PPO; and PPO’s updated parameters flow back into the generator. Note that every arrow into the diffusion model originates, directly or indirectly, from the policy it is training — which is the structural reason for the warning below.',
+            zh: '完整的闭环。轨迹自环境出发顺时针流经生成与行为克隆进入扩散模型；合成样本回流至 PPO；PPO 更新后的参数再回流至生成器。请注意：所有指向扩散模型的箭头，直接或间接地都源自它正在训练的那个策略——这正是下方警示的结构性成因。',
+          },
+        },
+        {
           kind: 'bullets',
           ordered: true,
           items: [
