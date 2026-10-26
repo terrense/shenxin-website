@@ -224,6 +224,21 @@ export const gnssInsNavigation: Project = {
           ],
         },
         {
+          kind: 'media',
+          type: 'image',
+          src: '/assets/real/gnss-error-plots.webp',
+          mediaKind: 'capture',
+          ratio: '1232 / 559',
+          alt: {
+            en: 'Two MATLAB figures plotting position error and velocity error against GPS time on the east, north and up axes, each subplot annotated with its RMS value.',
+            zh: '两幅 MATLAB 图窗，分别绘制东、北、天三轴的定位误差与速度误差随 GPS 时间的变化，每个子图标注其 RMS 值。',
+          },
+          caption: {
+            en: 'Error traces for one of the compared configurations, over GPS week 2032. The table reports the summary statistic; the traces show where it comes from — the east and north channels sit near zero with occasional sharp excursions, while the up channel is both larger and more persistent. A filter that only reduced the spikes without improving the baseline would produce a better RMS and a worse trajectory, which is why both views are kept.',
+            zh: '对比配置之一在 GPS 第 2032 周的误差曲线。表格给出的是汇总统计量，而曲线显示它从何而来——东向与北向通道贴近零值、偶有尖锐跳变，天向通道则既更大也更持续。一个只削平尖峰而不改善基线的滤波器，会得到更好的 RMS 与更差的轨迹——这正是两种视图都保留的原因。',
+          },
+        },
+        {
           kind: 'metrics',
           items: [
             {
