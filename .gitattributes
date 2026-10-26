@@ -1,0 +1,13 @@
+# Normalise line endings in the repository to LF.
+# Cloudflare Pages builds on Linux; committing CRLF from Windows makes every
+# file look modified when anyone else checks it out.
+* text=auto eol=lf
+
+# Binary assets must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff2 binary
+*.ico binary
+*.mp4 binary

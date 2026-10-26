@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shenxin-website.pages.dev/sitemap.xml

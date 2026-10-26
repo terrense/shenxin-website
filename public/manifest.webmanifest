@@ -1,0 +1,13 @@
+{
+  "name": "Xin Shen — AI Systems Engineer",
+  "short_name": "Xin Shen",
+  "description": "Agentic AI, reinforcement learning, robotics and multimodal AI engineering case studies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

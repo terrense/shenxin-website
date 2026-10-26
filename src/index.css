@@ -1,0 +1,307 @@
+@import 'tailwindcss';
+
+@import '@fontsource-variable/space-grotesk/index.css';
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource-variable/jetbrains-mono/index.css';
+
+/* ===========================================================================
+   DESIGN SYSTEM
+   ===========================================================================
+
+   Light-first, modelled on apple.com: near-black text on white, generous
+   type, one accent, and a small number of deliberately dark "spotlight"
+   bands for drama (the hero and the contact panel) rather than a dark page.
+
+   Readability is the governing constraint, not taste:
+     - body text runs at 16.1:1 contrast (#1d1d1f on #ffffff), well past the
+       7:1 AAA threshold;
+     - secondary text holds 4.9:1 and is never used for anything a reader
+       actually has to read;
+     - the smallest type on the site is 13px, up from the 11px a "technical"
+       look tempts you into.
+
+   TONE SCOPES
+   -----------
+   Colours are semantic tokens, not fixed values. `.tone-dark` redefines the
+   same tokens, so a component written once renders correctly on both light
+   and dark bands — no component needs to know which it is in.
+   =========================================================================== */
+
+@theme {
+  /* --- Surfaces --- */
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f5f7; /* alternating section band */
+  --color-surface-3: #ffffff; /* elevated card */
+  --color-surface-sunken: #fafafc;
+
+  /* --- Text --- */
+  --color-ink: #1d1d1f; /* primary — 16.1:1 on white */
+  --color-ink-2: #6e6e73; /* secondary — 4.9:1 */
+  --color-ink-3: #86868b; /* tertiary — large/decorative only */
+
+  /* --- Lines --- */
+  --color-line: #d2d2d7;
+  --color-line-2: #e8e8ed;
+
+  /* --- Accents. One primary; violet and amber are supporting. --- */
+  --color-accent: #0071e3; /* fills and buttons */
+  --color-accent-ink: #0066cc; /* accent as text — 5.6:1 on white */
+  --color-accent-soft: #e8f2fd;
+  --color-violet: #5b3fd6; /* 6.9:1 on white */
+  --color-violet-soft: #efecfd;
+  --color-amber: #9a5b00; /* 5.2:1 on white */
+  --color-amber-soft: #fdf2e3;
+
+  /* --- Type --- */
+  --font-cjk:
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC',
+    sans-serif;
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui,
+    var(--font-cjk);
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, var(--font-cjk);
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace,
+    var(--font-cjk);
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* --- Layout --- */
+  --breakpoint-3xl: 112rem;
+
+  /* --- Keyframes --- */
+  --animate-marquee: marquee 42s linear infinite;
+}
+
+/* Dark spotlight bands. Values are Apple's own dark-mode set — notably
+   #2997ff, which is the blue they switch to on black because #0071e3 is too
+   dim against it. */
+.tone-dark {
+  --color-surface: #000000;
+  --color-surface-2: #0a0a0c;
+  --color-surface-3: #1d1d1f;
+  --color-surface-sunken: #000000;
+
+  --color-ink: #f5f5f7;
+  --color-ink-2: #a1a1a6;
+  --color-ink-3: #86868b;
+
+  --color-line: #38383c;
+  --color-line-2: #2a2a2e;
+
+  --color-accent: #2997ff;
+  --color-accent-ink: #2997ff;
+  --color-accent-soft: #11283d;
+  --color-violet: #a78bfa;
+  --color-violet-soft: #221d3a;
+  --color-amber: #ffb340;
+  --color-amber-soft: #3a2a10;
+
+  color-scheme: dark;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ===========================================================================
+   BASE
+   =========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --header-h: 3.5rem;
+  }
+
+  * {
+    border-color: var(--color-line-2);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* 17px — Apple's body size, and the smallest that stays comfortable for
+       long-form reading. */
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    letter-spacing: -0.022em;
+    line-height: 1.08;
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-accent) 22%, transparent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Chinese glyphs are denser than Latin at the same size: more leading, no
+     negative tracking, and no `balance` (there are no word boundaries to
+     balance on). */
+  :root[data-locale='zh'] body {
+    line-height: 1.8;
+  }
+  :root[data-locale='zh'] h1,
+  :root[data-locale='zh'] h2,
+  :root[data-locale='zh'] h3,
+  :root[data-locale='zh'] h4 {
+    letter-spacing: 0;
+    line-height: 1.25;
+    text-wrap: normal;
+  }
+}
+
+/* ===========================================================================
+   REDUCED MOTION
+   =========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================================================
+   UTILITIES
+   =========================================================================== */
+
+@utility shell {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* A card. On light this is a real surface with a hairline and a soft shadow;
+   inside `.tone-dark` the tokens flip and it becomes a lifted dark panel. */
+@utility card {
+  position: relative;
+  background-color: var(--color-surface-3);
+  border: 1px solid var(--color-line);
+  border-radius: 1.125rem;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 24px -12px rgb(0 0 0 / 0.08);
+}
+
+.tone-dark .card,
+.tone-dark.card {
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+    0 20px 60px -28px rgb(0 0 0 / 0.9);
+}
+
+/* Monospace eyebrow. 13px floor — the old 11px was unreadable at arm's length. */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+  font-weight: 500;
+}
+
+@utility rule-fade {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-line) 15%, var(--color-line) 85%, transparent);
+}
+
+/* Reserved for the hero. Accent-tinted display type, never body copy. */
+@utility text-gradient {
+  background: linear-gradient(96deg, var(--color-ink) 10%, var(--color-accent) 58%, var(--color-violet) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility section-y {
+  padding-block: 5rem;
+  @media (width >= 48rem) {
+    padding-block: 7rem;
+  }
+  @media (width >= 80rem) {
+    padding-block: 8.5rem;
+  }
+}
+
+/* Long-form case-study prose. Primary ink, not secondary: this is the text
+   people are here to read. */
+@utility prose-lab {
+  color: var(--color-ink);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+
+  & > * + * {
+    margin-top: 1.1em;
+  }
+  & strong {
+    font-weight: 600;
+  }
+  & a {
+    color: var(--color-accent-ink);
+    text-underline-offset: 3px;
+    text-decoration-line: underline;
+  }
+  & code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-ink);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-line-2);
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+  }
+  @media (width >= 48rem) {
+    font-size: 1.125rem;
+  }
+}

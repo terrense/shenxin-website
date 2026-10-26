@@ -1,0 +1,4 @@
+# Cloudflare Pages SPA fallback.
+# Every unmatched path is served index.html with a 200 so client-side routes
+# like /projects/vla-lab work on a hard refresh and on direct link shares.
+/*  /index.html  200

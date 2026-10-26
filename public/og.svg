@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Xin Shen — AI Systems Engineer">
+  <!--
+    Source for og.png. Rasterised by scripts/make-og.mjs (sharp → librsvg).
+
+    Two constraints come from the rasteriser, not from design taste:
+
+      1. Every <path> declares fill explicitly. SVG defaults to fill:black, so
+         an unfilled open path renders as a solid black wedge.
+
+      2. Font families must name REAL faces. librsvg resolves through
+         fontconfig, which has no access to the bundled webfonts and — verified
+         on this machine — maps the generic `sans-serif` to a monospace face.
+         `Segoe UI` resolves on Windows; on a Linux CI box fontconfig
+         substitutes Liberation Sans for `Arial`, which is metrically
+         compatible, so the card survives being rebuilt elsewhere.
+
+    Edit this file, then run `npm run og` and commit the regenerated PNG.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#060912"/>
+      <stop offset="0.55" stop-color="#090d19"/>
+      <stop offset="1" stop-color="#0d1222"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientTransform="translate(240 150) rotate(35) scale(520 380)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5ee7ff" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#5ee7ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientTransform="translate(1010 540) rotate(-40) scale(520 400)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b7cff" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8b7cff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ee7ff"/>
+      <stop offset="1" stop-color="#8b7cff"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#c2cbe8" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glowA)"/>
+  <rect width="1200" height="630" fill="url(#glowB)"/>
+
+  <!-- Node lattice. fill="none" on the group: see note 1 above. -->
+  <g fill="none" stroke="url(#accent)" stroke-opacity="0.3" stroke-width="1.25" stroke-linecap="round">
+    <path d="M905 180 L1010 246"/>
+    <path d="M1010 246 L1098 196"/>
+    <path d="M1010 246 L985 362"/>
+    <path d="M985 362 L1086 420"/>
+    <path d="M985 362 L880 408"/>
+    <path d="M905 180 L880 408"/>
+  </g>
+  <g fill="url(#accent)" stroke="none">
+    <circle cx="905" cy="180" r="5"/>
+    <circle cx="1010" cy="246" r="7.5"/>
+    <circle cx="1098" cy="196" r="4"/>
+    <circle cx="985" cy="362" r="6"/>
+    <circle cx="1086" cy="420" r="4.5"/>
+    <circle cx="880" cy="408" r="5"/>
+  </g>
+
+  <text x="88" y="128" fill="#7f8caf" font-family="Consolas, 'Courier New', monospace" font-size="19" letter-spacing="4.4">AI SYSTEMS ENGINEER</text>
+
+  <rect x="88" y="150" width="86" height="3" rx="1.5" fill="url(#accent)"/>
+
+  <text x="86" y="268" fill="#f0f4ff" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="96" font-weight="700" letter-spacing="-2.5">Xin Shen</text>
+
+  <text x="88" y="344" fill="#a2aece" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31">Agentic AI · Reinforcement Learning</text>
+  <text x="88" y="388" fill="#a2aece" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31">Robotics · Multimodal AI</text>
+
+  <text x="88" y="490" fill="#7f8caf" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="22">From simulation and post-training to deployed hardware.</text>
+
+  <g font-family="Consolas, 'Courier New', monospace" font-size="16" letter-spacing="1.4">
+    <rect x="88" y="524" width="186" height="38" rx="19" fill="#5ee7ff" fill-opacity="0.09" stroke="#5ee7ff" stroke-opacity="0.32"/>
+    <text x="114" y="549" fill="#5ee7ff">VLA · SIM2REAL</text>
+    <rect x="290" y="524" width="200" height="38" rx="19" fill="#8b7cff" fill-opacity="0.09" stroke="#8b7cff" stroke-opacity="0.32"/>
+    <text x="316" y="549" fill="#8b7cff">SFT · DPO · GRPO</text>
+  </g>
+
+  <rect x="0" y="626" width="1200" height="4" fill="url(#accent)"/>
+</svg>

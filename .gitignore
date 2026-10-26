@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build output (Cloudflare Pages builds this itself; never commit it)
+dist
+dist-ssr
+.vite
+*.tsbuildinfo
+
+# Secrets — this repository is public.
+# Nothing in this project needs an API key or token at build or run time; if
+# that ever changes, the value belongs in the Cloudflare Pages dashboard under
+# Settings -> Environment variables, never in a committed file.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+id_rsa*
+.npmrc
+.wrangler
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.local
+.idea
+.vscode/*
+!.vscode/extensions.json
