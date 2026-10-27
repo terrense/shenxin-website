@@ -171,6 +171,51 @@
     border-radius: 4px;
   }
 
+  /* ---------------------------------------------------------------------
+     Robotic-hand cursor.
+     ---------------------------------------------------------------------
+     Real SVG cursors rather than a JS element chasing the pointer: a
+     scripted cursor lags the hardware pointer by a frame or two, which is
+     most noticeable exactly when someone is aiming at something.
+
+     Two variants so the cursor still says whether a thing is clickable —
+     replacing the arrow everywhere would otherwise throw that signal away.
+     The numbers after the URL are the hotspot in pixels (the fingertip);
+     re-derive them if either SVG's viewBox changes.
+
+     Gated behind `pointer: fine`: a touch device has no cursor, and a stylus
+     or trackpad-with-assistive-settings should keep the system default. The
+     fallbacks after the comma also cover browsers that reject the image. */
+  @media (pointer: fine) {
+    html,
+    body {
+      cursor: url('/cursor-hand.svg') 9 2, default;
+    }
+
+    a,
+    button,
+    summary,
+    [role='button'],
+    [role='tab'],
+    label[for],
+    .card {
+      cursor: url('/cursor-hand-active.svg') 10 3, pointer;
+    }
+
+    /* Text entry and selection keep their own affordances — a pointing hand
+       over a text field actively misleads. */
+    input:not([type='button']):not([type='submit']):not([type='checkbox']):not([type='radio']),
+    textarea,
+    [contenteditable='true'] {
+      cursor: text;
+    }
+
+    :disabled,
+    [aria-disabled='true'] {
+      cursor: not-allowed;
+    }
+  }
+
   /* Chinese glyphs are denser than Latin at the same size: more leading, no
      negative tracking, and no `balance` (there are no word boundaries to
      balance on). */

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="40" viewBox="0.4 1.6 19.6 32.8">
+  <!--
+    Robotic index finger, used as the page cursor via CSS `cursor: url(...)`.
+
+    Drawn as a real SVG cursor rather than a JS element that chases the
+    pointer: a scripted cursor always trails the hardware pointer by a frame
+    or two, which feels broken precisely when someone is aiming at something.
+
+    The viewBox is cropped to the artwork's actual bounds, not left at a round
+    0 0 40 40. With the loose box the hand rendered at roughly a quarter of
+    the cursor's declared size and was unreadable; the browser scales the
+    viewBox to width/height, so empty margin is wasted cursor.
+
+    Hotspot is the fingertip at (7, 2) in rendered pixels — declared in
+    index.css, and it must be re-derived if these bounds change.
+
+    Forms are chunky on purpose. At this size thin mechanical detail turns to
+    mush; the joints read because they are blocks, not lines.
+  -->
+  <defs>
+    <linearGradient id="metal" x1="4" y1="2" x2="20" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#d7dde9"/>
+      <stop offset="1" stop-color="#97a3ba"/>
+    </linearGradient>
+  </defs>
+
+  <g stroke="#11141a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Extended index finger: two visible segments, tapering to the tip. -->
+    <path d="M6.6 2.6 L10.8 2.6 L11.5 11 L6.1 11 Z" fill="url(#metal)"/>
+    <path d="M6.1 11.4 L11.5 11.4 L12 17.4 L5.7 17.4 Z" fill="url(#metal)"/>
+
+    <!-- Knuckle housing: the folded fingers, abstracted to one block. -->
+    <path d="M5.4 18 L12.6 18 L14.9 20.3 L14.9 27.5
+             A6.5 6.5 0 0 1 8.4 34 L7.6 34
+             A5.5 5.5 0 0 1 2.1 28.5 L2.1 20.5 Z" fill="url(#metal)"/>
+
+    <!-- Folded digits, suggested with two grooves rather than drawn out. -->
+    <path d="M14.7 22.4 L17.9 22.4 A2.05 2.05 0 0 1 17.9 26.5 L14.9 26.5" fill="url(#metal)"/>
+    <path d="M14.9 26.7 L17.1 26.7 A2.05 2.05 0 0 1 17.1 30.8 L13.9 30.8" fill="url(#metal)"/>
+  </g>
+
+  <!-- Joint pins in the accent blue: the one cue that says machine, not glove. -->
+  <g fill="#0071e3">
+    <circle cx="8.8" cy="11.2" r="1.25"/>
+    <circle cx="8.9" cy="17.6" r="1.25"/>
+    <circle cx="8.4" cy="25.6" r="1.7"/>
+  </g>
+</svg>

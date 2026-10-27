@@ -20,9 +20,18 @@ import { cn } from '@/lib/utils';
 export function SpotlightCard({
   children,
   className,
-  /** CSS colour for the spotlight core. */
-  color = 'rgba(94, 231, 255, 0.11)',
-  radius = 420,
+  /**
+   * CSS colour for the spotlight core.
+   *
+   * Tuned for a light surface: the original 11% alpha was calibrated against
+   * a near-black card and is effectively invisible on white. A spotlight has
+   * to be strong enough to read as deliberate, or it just looks like a
+   * rendering artefact.
+   */
+  color = 'rgba(0, 113, 227, 0.3)',
+  /** Tighter than the old 420px — a smaller pool reads as a light source
+   *  following the pointer, a huge one reads as the card changing colour. */
+  radius = 300,
   as = 'div',
 }: {
   children: ReactNode;
@@ -67,13 +76,17 @@ export function SpotlightCard({
         } as React.CSSProperties
       }
     >
+      {/* Two stacked pools: a tight bright core and a wide soft falloff. One
+          gradient alone either reads as a hard disc or as a vague wash. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-0 transition-opacity duration-500 ease-out-expo"
+        className="pointer-events-none absolute inset-0 -z-0 transition-opacity duration-300 ease-out-expo"
         style={{
           opacity: active ? 1 : 0,
-          background:
-            'radial-gradient(var(--spot-radius) circle at var(--mx, 50%) var(--my, 0%), var(--spot-color), transparent 72%)',
+          background: [
+            'radial-gradient(calc(var(--spot-radius) * 0.45) circle at var(--mx, 50%) var(--my, 0%), var(--spot-color), transparent 70%)',
+            'radial-gradient(var(--spot-radius) circle at var(--mx, 50%) var(--my, 0%), var(--spot-color), transparent 75%)',
+          ].join(','),
         }}
       />
       {children}

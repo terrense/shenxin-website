@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { ScrollProgress } from './Ambience';
+import { SparkleTrail } from '@/components/bits/SparkleTrail';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
@@ -55,6 +56,7 @@ export function Layout() {
   return (
     <div id="top" className="relative flex min-h-dvh flex-col bg-surface">
       <ScrollProgress />
+      <SparkleTrail />
 
       <a
         href="#main"

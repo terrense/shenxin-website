@@ -58,10 +58,17 @@ export function ProjectCard({
       // outer <RevealItem as="li"> already supplies it, so this must not be a
       // second <li>.
       as={variant === 'bento' ? 'li' : 'div'}
-      color={`${accent.hex}1c`}
+      // 4d ≈ 30% alpha. Deliberately strong: this is a light card, and the
+      // accent has to carry across white rather than sit on near-black.
+      color={`${accent.hex}4d`}
       className={cn(
-        'card group relative rounded-2xl transition-[border-color,transform] duration-500 ease-out-expo hover:-translate-y-0.5',
-        'hover:border-line',
+        'card group relative rounded-2xl transition-[border-color,transform,box-shadow] duration-300 ease-out-expo',
+        // Hover moves three things together — lift, accent border, accent-tinted
+        // shadow — so the spotlight reads as the card responding rather than as
+        // a stray gradient floating on top of it.
+        'hover:-translate-y-1',
+        accent.hoverBorder,
+        accent.hoverShadow,
         variant === 'bento' ? bentoSpan[project.span] : 'h-full',
       )}
     >

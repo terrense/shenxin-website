@@ -18,6 +18,8 @@ export const accentClasses: Record<
     glow: string;
     from: string;
     ring: string;
+    hoverBorder: string;
+    hoverShadow: string;
     hex: string;
   }
 > = {
@@ -28,6 +30,10 @@ export const accentClasses: Record<
     glow: 'shadow-[0_0_50px_-20px_var(--color-accent)]',
     from: 'from-accent/12',
     ring: 'ring-accent/30',
+    // Written out literally, never built by string manipulation — Tailwind
+    // scans source text, so a class assembled at runtime is never generated.
+    hoverBorder: 'hover:border-accent/70',
+    hoverShadow: 'hover:shadow-[0_18px_40px_-16px_var(--color-accent)]',
     hex: '#0071e3',
   },
   flux: {
@@ -37,6 +43,8 @@ export const accentClasses: Record<
     glow: 'shadow-[0_0_50px_-20px_var(--color-violet)]',
     from: 'from-violet/12',
     ring: 'ring-violet/30',
+    hoverBorder: 'hover:border-violet/70',
+    hoverShadow: 'hover:shadow-[0_18px_40px_-16px_var(--color-violet)]',
     hex: '#5b3fd6',
   },
   ember: {
@@ -46,6 +54,8 @@ export const accentClasses: Record<
     glow: 'shadow-[0_0_50px_-20px_var(--color-amber)]',
     from: 'from-amber/12',
     ring: 'ring-amber/30',
+    hoverBorder: 'hover:border-amber/70',
+    hoverShadow: 'hover:shadow-[0_18px_40px_-16px_var(--color-amber)]',
     hex: '#9a5b00',
   },
 };
