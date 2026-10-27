@@ -49,8 +49,17 @@ if (!chromePath) {
 }
 
 const url = process.argv[2] ?? 'http://localhost:5173/';
-/** A page with less text than this never really rendered. */
-const MIN_TEXT = 500;
+/**
+ * A page with less text than this never really rendered.
+ *
+ * Deliberately low. The failure being caught is a blank page — a script that
+ * 404s or a component that throws leaves single digits of text, not
+ * hundreds. Set high enough to also flag "thin" pages and it starts failing
+ * on the map and the hall, which are mostly picture by design and come in
+ * around 350–400 characters. A smoke test that cries wolf on healthy pages
+ * gets ignored, and then it catches nothing.
+ */
+const MIN_TEXT = 150;
 /** Allow one: RotatingText keeps an outgoing span mid-transition. */
 const MAX_INVISIBLE = 2;
 

@@ -119,6 +119,31 @@ export const ui = {
   'writing.minutes': { en: 'min read', zh: '分钟阅读', ru: 'мин чтения' },
   'writing.unpublished': { en: 'Unpublished', zh: '未发布', ru: 'Не опубликовано' },
 
+  'palace.eyebrow': { en: 'The Hall', zh: '厅', ru: 'Чертог' },
+  'palace.title': {
+    en: "The Navigator's Hall",
+    zh: '导航者之厅',
+    ru: 'Чертог навигатора',
+  },
+  'palace.lede': {
+    en: 'A room you can walk around, where each instrument opens a piece of the story. Prefer to read? Every exhibit is a button underneath.',
+    zh: '一个可以走动的房间，每件仪器都打开故事的一段。想直接读？下方每件展品都有按钮。',
+    ru: 'Зал, по которому можно походить: каждый прибор открывает фрагмент истории. Хотите просто прочитать? Ниже у каждого экспоната есть кнопка.',
+  },
+  'palace.sceneLabel': {
+    en: 'Explorable hall. Click to focus, then move with arrow keys or WASD and press E next to an exhibit.',
+    zh: '可探索的大厅。点击以聚焦，然后用方向键或 WASD 移动，靠近展品按 E。',
+    ru: 'Зал для исследования. Щёлкните, чтобы сфокусировать, затем перемещайтесь стрелками или WASD и нажмите E рядом с экспонатом.',
+  },
+  'palace.hintMove': {
+    en: 'Click the hall, then move with ← ↑ ↓ → or WASD',
+    zh: '点击大厅，然后用 ← ↑ ↓ → 或 WASD 移动',
+    ru: 'Щёлкните по залу, затем идите ← ↑ ↓ → или WASD',
+  },
+  'palace.hintOpen': { en: 'Press E to look closer', zh: '按 E 细看', ru: 'Нажмите E, чтобы рассмотреть' },
+  'palace.index': { en: 'Everything in this room', zh: '这个房间里的一切', ru: 'Всё в этом зале' },
+  'palace.readCase': { en: 'Read the case study', zh: '阅读案例', ru: 'Читать разбор' },
+
   'footprints.eyebrow': { en: 'Footprints', zh: '足迹', ru: 'География' },
   'footprints.title': { en: 'Where I have been', zh: '我去过的地方', ru: 'Где я побывал' },
   'footprints.lede': {

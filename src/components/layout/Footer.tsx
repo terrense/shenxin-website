@@ -42,6 +42,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/hall" className="text-ink-2 transition-colors hover:text-ink">
+                    {ui('palace.eyebrow')}
+                  </Link>
+                </li>
+                <li>
                   <Link to="/footprints" className="text-ink-2 transition-colors hover:text-ink">
                     {ui('footprints.eyebrow')}
                   </Link>

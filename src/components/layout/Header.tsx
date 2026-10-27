@@ -145,7 +145,15 @@ export function Header() {
                   </Link>
                 </li>
               ))}
-              {/* A real route rather than a hash — it is its own page. */}
+              {/* Real routes rather than hashes — these are their own pages. */}
+              <li>
+                <Link
+                  to="/hall"
+                  className="rounded-lg px-3 py-2 text-[0.8125rem] text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
+                >
+                  {ui('palace.eyebrow')}
+                </Link>
+              </li>
               <li>
                 <Link
                   to="/footprints"
@@ -235,6 +243,14 @@ export function Header() {
                     </li>
                   ))}
                   <li className="pt-2">
+                    <Link
+                      to="/hall"
+                      className="block rounded-lg px-3 py-3 font-display text-lg text-ink"
+                    >
+                      {ui('palace.eyebrow')}
+                    </Link>
+                  </li>
+                  <li>
                     <Link
                       to="/footprints"
                       className="block rounded-lg px-3 py-3 font-display text-lg text-ink"

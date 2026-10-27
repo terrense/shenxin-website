@@ -12,6 +12,7 @@ import Home from '@/pages/Home';
 const Projects = lazy(() => import('@/pages/Projects'));
 const ProjectCase = lazy(() => import('@/pages/ProjectCase'));
 const Footprints = lazy(() => import('@/pages/Footprints'));
+const Palace = lazy(() => import('@/pages/Palace'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 /** Minimum-height placeholder, so a route swap cannot collapse the footer upward. */
@@ -47,6 +48,14 @@ export default function App() {
               element={
                 <Suspense fallback={<RouteFallback />}>
                   <Footprints />
+                </Suspense>
+              }
+            />
+            <Route
+              path="hall"
+              element={
+                <Suspense fallback={<RouteFallback />}>
+                  <Palace />
                 </Suspense>
               }
             />

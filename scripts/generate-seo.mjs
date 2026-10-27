@@ -63,6 +63,7 @@ async function main() {
     urlEntry('/', { priority: '1.0', changefreq: 'monthly', lastmod }),
     urlEntry('/projects', { priority: '0.9', changefreq: 'monthly', lastmod }),
     urlEntry('/footprints', { priority: '0.5', changefreq: 'yearly', lastmod }),
+    urlEntry('/hall', { priority: '0.5', changefreq: 'yearly', lastmod }),
     ...slugs.map((slug) =>
       urlEntry(`/projects/${slug}`, { priority: '0.8', changefreq: 'yearly', lastmod }),
     ),
