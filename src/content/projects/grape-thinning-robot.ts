@@ -2,19 +2,25 @@ import type { Project } from '../types';
 
 export const grapeThinningRobot: Project = {
   slug: 'grape-thinning-robot',
-  title: { en: 'Vineyard Thinning Robot', zh: '葡萄疏果机器人' },
+  title: { en: 'Vineyard Thinning Robot', zh: '葡萄疏果机器人', ru: 'Робот для прореживания винограда' },
   tagline: {
     en: 'Rust perception–decision–manipulation stack on a 6-DoF arm, in the field',
     zh: '基于 Rust 的感知-决策-操作栈，六轴机械臂，田间作业',
+    ru: 'Стек «восприятие — решение — манипуляция» на Rust, шестиосевой манипулятор, работа в поле',
   },
   summary: {
     en: 'An agricultural robot that finds grape clusters, decides which berries to remove, and executes the cut with a 6-DoF arm — outdoors, in changing light, with no second chance at a cut. Built in Rust around a zero-copy IPC bus so perception, planning and control stay decoupled but hard real-time.',
     zh: '一台农业机器人：找到葡萄串、决定摘除哪些果粒、用六轴机械臂执行剪切——在户外、在变化的光照下，而且剪错没有第二次机会。用 Rust 围绕零拷贝 IPC 总线构建，使感知、规划与控制保持解耦的同时满足硬实时。',
+    ru: 'Сельскохозяйственный робот, который находит грозди, решает, какие ягоды удалить, и выполняет срез шестиосевым манипулятором — под открытым небом, при меняющемся освещении и без права на вторую попытку. Написан на Rust вокруг шины IPC без копирования, чтобы восприятие, планирование и управление оставались развязанными, но жёстко реального времени.',
   },
   domain: 'robotics',
   alsoIn: ['embodied', 'infra'],
   period: '2023 — 2025',
-  role: { en: 'Systems architect & perception lead', zh: '系统架构与感知负责人' },
+  role: {
+    en: 'Systems architect & perception lead',
+    zh: '系统架构与感知负责人',
+    ru: 'Системный архитектор, руководитель направления восприятия',
+  },
   status: 'shipped',
   accent: 'signal',
   stack: [
@@ -32,24 +38,33 @@ export const grapeThinningRobot: Project = {
     {
       value: '8ms',
       provenance: 'spec',
-      label: { en: 'Control feedback', zh: '控制反馈周期' },
-      detail: { en: 'Real-time arm state, 125 Hz', zh: '机械臂实时状态，125 Hz' },
+      label: { en: 'Control feedback', zh: '控制反馈周期', ru: 'Период обратной связи' },
+      detail: {
+        en: 'Real-time arm state, 125 Hz',
+        zh: '机械臂实时状态，125 Hz',
+        ru: 'Состояние манипулятора в реальном времени, 125 Гц',
+      },
     },
     {
       value: '4',
       provenance: 'spec',
       countTo: 4,
-      label: { en: 'Decoupled processes', zh: '解耦进程' },
+      label: { en: 'Decoupled processes', zh: '解耦进程', ru: 'Развязанных процессов' },
       detail: {
         en: 'Perception · decision · navigation · control',
         zh: '感知 · 决策 · 导航 · 控制',
+        ru: 'Восприятие · решение · навигация · управление',
       },
     },
     {
       value: '0-copy',
       provenance: 'spec',
-      label: { en: 'Inter-process frames', zh: '进程间图像传输' },
-      detail: { en: 'Shared-memory image transport', zh: '共享内存图像通道' },
+      label: { en: 'Inter-process frames', zh: '进程间图像传输', ru: 'Кадры между процессами' },
+      detail: {
+        en: 'Shared-memory image transport',
+        zh: '共享内存图像通道',
+        ru: 'Передача изображений через разделяемую память',
+      },
     },
   ],
   // TODO(content): add a repo or write-up link when one is public.

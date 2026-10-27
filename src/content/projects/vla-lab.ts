@@ -5,19 +5,26 @@ export const vlaLab: Project = {
   title: {
     en: 'VLA Lab — Policies Against Real Limits',
     zh: 'VLA Lab — 真实硬件约束下的策略评测',
+    ru: 'VLA Lab — политики против реальных ограничений',
   },
   tagline: {
     en: 'What vision-language-action models actually fit on one consumer GPU',
     zh: '在一张消费级显卡上，视觉-语言-动作模型到底装得下什么',
+    ru: 'Какие модели «зрение — язык — действие» реально помещаются на одну потребительскую видеокарту',
   },
   summary: {
     en: 'A measured study of which VLA policies are trainable and servable on a single consumer GPU, and why the published VRAM tables are the wrong constraint. Includes a latency benchmark, an action-chunking ablation, and a documented trail of three environment traps that each cost a day.',
     zh: '一项实测研究：哪些 VLA 策略能在单张消费级显卡上训练与部署，以及为什么公开的显存需求表并不是真正的约束。包含延迟基准、动作分块消融，以及三个各耗掉一天的环境陷阱的完整记录。',
+    ru: 'Измерительное исследование того, какие VLA-политики реально обучаемы и запускаемы на одной потребительской видеокарте и почему опубликованные таблицы требований к видеопамяти указывают не на то ограничение. Включает бенчмарк задержек, абляцию по длине блока действий и задокументированный след трёх ловушек окружения, каждая из которых стоила дня.',
   },
   domain: 'embodied',
   alsoIn: ['robotics', 'infra'],
   period: '2025 — now',
-  role: { en: 'Solo — research engineering', zh: '独立完成 — 研究工程' },
+  role: {
+    en: 'Solo — research engineering',
+    zh: '独立完成 — 研究工程',
+    ru: 'Один — исследовательская инженерия',
+  },
   status: 'active',
   accent: 'signal',
   stack: [
@@ -34,14 +41,26 @@ export const vlaLab: Project = {
     {
       value: '450M',
       provenance: 'spec',
-      label: { en: 'Largest trainable VLA', zh: '可训练的最大 VLA' },
-      detail: { en: 'SmolVLA — ~2 GB host peak', zh: 'SmolVLA — 宿主内存峰值约 2 GB' },
+      label: {
+        en: 'Largest trainable VLA',
+        zh: '可训练的最大 VLA',
+        ru: 'Крупнейшая обучаемая VLA',
+      },
+      detail: {
+        en: 'SmolVLA — ~2 GB host peak',
+        zh: 'SmolVLA — 宿主内存峰值约 2 GB',
+        ru: 'SmolVLA — пик ОЗУ около 2 ГБ',
+      },
     },
     {
       value: '14.4GB',
       provenance: 'measured',
-      label: { en: 'π₀ host-RAM peak', zh: 'π₀ 宿主内存峰值' },
-      detail: { en: 'The real ceiling, not VRAM', zh: '真正的天花板，不是显存' },
+      label: { en: 'π₀ host-RAM peak', zh: 'π₀ 宿主内存峰值', ru: 'Пик ОЗУ для π₀' },
+      detail: {
+        en: 'The real ceiling, not VRAM',
+        zh: '真正的天花板，不是显存',
+        ru: 'Настоящий потолок — не видеопамять',
+      },
     },
     {
       value: '5',

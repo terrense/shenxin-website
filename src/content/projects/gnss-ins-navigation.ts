@@ -11,14 +11,17 @@ export const gnssInsNavigation: Project = {
   title: {
     en: 'Robust Adaptive GNSS/INS Navigation',
     zh: 'GNSS/INS 鲁棒自适应组合导航',
+    ru: 'Робастная адаптивная навигация ГНСС/ИНС',
   },
   tagline: {
     en: 'A tightly coupled filter that holds position when the measurements lie',
     zh: '当量测失真时仍能守住定位精度的紧耦合滤波器',
+    ru: 'Тесно связанный фильтр, удерживающий решение, когда измерения лгут',
   },
   summary: {
     en: 'Doctoral research on nonlinear state estimation for integrated navigation. A maximum-correntropy robust term suppresses heavy-tailed measurement outliers while an adaptive coefficient tracks changing process noise — cutting horizontal position RMSE to roughly a quarter of the GNSS-only baseline on the same trajectory.',
     zh: '关于组合导航非线性状态估计的博士研究。以最大相关熵鲁棒项抑制重尾量测野值，同时用自适应系数跟踪变化的过程噪声——在同一条轨迹上，将水平定位 RMSE 降至纯 GNSS 基线的约四分之一。',
+    ru: 'Диссертационное исследование по нелинейному оцениванию состояния в комплексированной навигации. Робастный член на основе максимума корэнтропии подавляет тяжелохвостые выбросы измерений, а адаптивный коэффициент отслеживает изменяющийся шум процесса — СКО горизонтального положения падает примерно до четверти от базового варианта с одной ГНСС на той же траектории.',
   },
   domain: 'robotics',
   alsoIn: ['infra'],
@@ -26,6 +29,7 @@ export const gnssInsNavigation: Project = {
   role: {
     en: 'Doctoral researcher — Bauman Moscow State Technical University',
     zh: '博士研究员 — 莫斯科鲍曼国立技术大学',
+    ru: 'Аспирант — МГТУ им. Н. Э. Баумана',
   },
   status: 'shipped',
   accent: 'signal',
@@ -42,21 +46,33 @@ export const gnssInsNavigation: Project = {
     {
       value: '1.10m',
       provenance: 'measured',
-      label: { en: 'Position RMSE, x', zh: '定位 RMSE（x 轴）' },
-      detail: { en: 'From 5.10 m GNSS-only', zh: '纯 GNSS 为 5.10 m' },
+      label: { en: 'Position RMSE, x', zh: '定位 RMSE（x 轴）', ru: 'СКО положения, x' },
+      detail: { en: 'From 5.10 m GNSS-only', zh: '纯 GNSS 为 5.10 m', ru: 'Было 5,10 м на одной ГНСС' },
     },
     {
       value: '−72%',
       provenance: 'measured',
-      label: { en: 'vs. standard tight coupling', zh: '相比标准紧耦合' },
-      detail: { en: 'x-axis RMSE, 3.87 m → 1.10 m', zh: 'x 轴 RMSE：3.87 m → 1.10 m' },
+      label: {
+        en: 'vs. standard tight coupling',
+        zh: '相比标准紧耦合',
+        ru: 'против обычной тесной связи',
+      },
+      detail: {
+        en: 'x-axis RMSE, 3.87 m → 1.10 m',
+        zh: 'x 轴 RMSE：3.87 m → 1.10 m',
+        ru: 'СКО по x: 3,87 м → 1,10 м',
+      },
     },
     {
       value: '5',
       provenance: 'measured',
       countTo: 5,
-      label: { en: 'Configurations compared', zh: '对比配置数' },
-      detail: { en: 'Same trajectory, same data', zh: '同一轨迹、同一组数据' },
+      label: { en: 'Configurations compared', zh: '对比配置数', ru: 'Сравнённых конфигураций' },
+      detail: {
+        en: 'Same trajectory, same data',
+        zh: '同一轨迹、同一组数据',
+        ru: 'Та же траектория, те же данные',
+      },
     },
   ],
   featured: true,

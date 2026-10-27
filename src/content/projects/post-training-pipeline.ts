@@ -11,19 +11,29 @@ import type { Project } from '../types';
  */
 export const postTrainingPipeline: Project = {
   slug: 'post-training-pipeline',
-  title: { en: 'LLM Post-Training, End to End', zh: '大模型后训练全链路' },
+  title: {
+    en: 'LLM Post-Training, End to End',
+    zh: '大模型后训练全链路',
+    ru: 'Пост-обучение LLM от начала до конца',
+  },
   tagline: {
     en: 'Data curation → SFT → reward model → GRPO → eval → serving, reproducibly',
     zh: '数据治理 → SFT → 奖励模型 → GRPO → 评测 → 部署，全程可复现',
+    ru: 'Подготовка данных → SFT → модель награды → GRPO → оценка → инференс, воспроизводимо',
   },
   summary: {
     en: 'A self-hosted post-training stack that takes a base model to a deployable policy without leaving the building. Every stage emits a manifest, every eval is seeded, and any checkpoint can be traced back to the exact data and config that produced it.',
     zh: '一套自建的后训练栈，把基座模型带到可部署策略，全程不出本地。每个阶段都产出 manifest，每次评测都固定随机种子，任意 checkpoint 都能追溯到产生它的确切数据与配置。',
+    ru: 'Собственный стек пост-обучения, доводящий базовую модель до пригодной к развёртыванию политики, не выходя за пределы контура. Каждый этап выпускает манифест, каждая оценка идёт с фиксированным зерном, и любой чекпойнт прослеживается до тех самых данных и конфигурации, которые его породили.',
   },
   domain: 'rl',
   alsoIn: ['agentic', 'infra'],
   period: '2024 — 2025',
-  role: { en: 'Lead engineer — full pipeline', zh: '主工程师 — 全链路' },
+  role: {
+    en: 'Lead engineer — full pipeline',
+    zh: '主工程师 — 全链路',
+    ru: 'Ведущий инженер — весь конвейер',
+  },
   status: 'active',
   accent: 'flux',
   stack: [
@@ -42,23 +52,32 @@ export const postTrainingPipeline: Project = {
       value: '5',
       provenance: 'spec',
       countTo: 5,
-      label: { en: 'Pipeline stages', zh: '流水线阶段' },
-      detail: { en: 'Each independently resumable', zh: '每阶段均可独立续跑' },
+      label: { en: 'Pipeline stages', zh: '流水线阶段', ru: 'Этапов конвейера' },
+      detail: {
+        en: 'Each independently resumable',
+        zh: '每阶段均可独立续跑',
+        ru: 'Каждый возобновляется независимо',
+      },
     },
     {
       value: '100%',
       provenance: 'spec',
-      label: { en: 'Runs reproducible', zh: '运行可复现' },
+      label: { en: 'Runs reproducible', zh: '运行可复现', ru: 'Запусков воспроизводимо' },
       detail: {
         en: 'Config + data hash pinned per checkpoint',
         zh: '每个 checkpoint 固定配置与数据哈希',
+        ru: 'Конфиг и хеш данных закреплены за чекпойнтом',
       },
     },
     {
       value: '1×8',
       provenance: 'spec',
-      label: { en: 'Target topology', zh: '目标拓扑' },
-      detail: { en: 'Single node; no cluster assumed', zh: '单节点，不假设集群' },
+      label: { en: 'Target topology', zh: '目标拓扑', ru: 'Целевая топология' },
+      detail: {
+        en: 'Single node; no cluster assumed',
+        zh: '单节点，不假设集群',
+        ru: 'Один узел; кластер не предполагается',
+      },
     },
   ],
   // TODO(content): add links once the repo is public, e.g.
