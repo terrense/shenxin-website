@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { SITE_URL } from '@/content/site';
+import type { Locale } from '@/content/types';
 
 type SeoInput = {
   title: string;
@@ -9,7 +10,7 @@ type SeoInput = {
   /** Absolute or root-relative image path. Defaults to the site card. */
   image?: string;
   type?: 'website' | 'article' | 'profile';
-  locale: 'en' | 'zh';
+  locale: Locale;
   /** JSON-LD object injected for this route. */
   jsonLd?: Record<string, unknown>;
   /** ISO date, for article routes. */
@@ -17,6 +18,13 @@ type SeoInput = {
 };
 
 const MANAGED = 'data-seo-managed';
+
+/** Open Graph wants underscored POSIX-style tags, not BCP 47. */
+const OG_LOCALE: Record<Locale, string> = {
+  en: 'en_US',
+  zh: 'zh_CN',
+  ru: 'ru_RU',
+};
 
 function setMeta(selector: string, attr: 'name' | 'property', key: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(selector);
@@ -79,12 +87,7 @@ export function useSeo({
     setMeta('meta[property="og:url"]', 'property', 'og:url', url);
     setMeta('meta[property="og:image"]', 'property', 'og:image', absoluteImage);
     setMeta('meta[property="og:type"]', 'property', 'og:type', type);
-    setMeta(
-      'meta[property="og:locale"]',
-      'property',
-      'og:locale',
-      locale === 'zh' ? 'zh_CN' : 'en_US',
-    );
+    setMeta('meta[property="og:locale"]', 'property', 'og:locale', OG_LOCALE[locale]);
     setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
     setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
     setMeta('meta[name="twitter:image"]', 'name', 'twitter:image', absoluteImage);
@@ -99,10 +102,12 @@ export function useSeo({
     }
 
     setLink('canonical', url);
-    // Both languages live at the same URL (client-side toggle), so hreflang
-    // points at the shared canonical rather than inventing /zh/ routes.
+    // Every language lives at the same URL (the switcher is client-side), so
+    // hreflang points at the shared canonical rather than inventing /zh/ and
+    // /ru/ routes that would then need separately pre-rendered documents.
     setLink('alternate', url, 'en');
     setLink('alternate', url, 'zh-Hans');
+    setLink('alternate', url, 'ru');
     setLink('alternate', url, 'x-default');
 
     const SCRIPT_ID = 'route-jsonld';

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { navSections, profile } from '@/content/site';
-import { useLocale } from '@/i18n/LocaleProvider';
+import { LOCALE_LABELS, LOCALE_TAGS, useLocale } from '@/i18n/LocaleProvider';
+import { LOCALES } from '@/content/types';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useScrollLock } from '@/hooks/useUi';
 import { EASE } from '@/lib/motion';
@@ -37,28 +38,48 @@ function Mark() {
   );
 }
 
-function LanguageToggle({ className }: { className?: string }) {
-  const { locale, toggle, ui } = useLocale();
+/**
+ * Language switcher.
+ *
+ * A segmented control rather than a toggle: with three languages a toggle
+ * would have to cycle, which means a Russian reader wanting English might
+ * pass through Chinese to get there. Every option is visible and one click
+ * away, and each is labelled in its own language.
+ */
+function LanguageSwitcher({ className }: { className?: string }) {
+  const { locale, setLocale, ui } = useLocale();
+
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={ui('nav.langSwitch')}
-      title={ui('nav.langSwitch')}
+    <div
+      role="group"
+      aria-label={ui('nav.lang')}
       className={cn(
-        'inline-flex h-9 items-center gap-2 rounded-lg border border-line px-2.5 font-mono text-[0.8125rem] tracking-wider text-ink-2 transition-colors duration-200 hover:border-accent/40 hover:text-accent-ink',
+        'inline-flex h-9 items-center gap-0.5 rounded-lg border border-line p-0.5',
         className,
       )}
     >
-      <Globe className="size-3.5" />
-      {/* Both labels are shown with the inactive one dimmed, so the control
-          reads as a state rather than an unlabelled action. */}
-      <span className={locale === 'en' ? 'text-ink' : 'text-ink-3'}>EN</span>
-      <span aria-hidden className="text-ink-3">
-        /
-      </span>
-      <span className={locale === 'zh' ? 'text-ink' : 'text-ink-3'}>中文</span>
-    </button>
+      <Globe aria-hidden className="mx-1.5 size-3.5 shrink-0 text-ink-3" />
+      {LOCALES.map((code) => {
+        const active = locale === code;
+        return (
+          <button
+            key={code}
+            type="button"
+            lang={LOCALE_TAGS[code]}
+            aria-pressed={active}
+            onClick={() => setLocale(code)}
+            className={cn(
+              'rounded-md px-2 py-1 font-mono text-[0.8125rem] leading-none tracking-wider transition-colors duration-200',
+              active
+                ? 'bg-accent text-white'
+                : 'text-ink-3 hover:bg-ink/[0.06] hover:text-ink',
+            )}
+          >
+            {LOCALE_LABELS[code]}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -128,7 +149,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <LanguageToggle />
+            <LanguageSwitcher />
             <a
               href={`mailto:${profile.email}`}
               // Accent fill, not ink: this is the one call to action in the
@@ -216,7 +237,7 @@ export function Header() {
               </nav>
 
               <div className="mt-6 space-y-3 border-t border-line-2 pt-6">
-                <LanguageToggle className="w-full justify-center" />
+                <LanguageSwitcher className="w-full justify-center" />
                 <a
                   href={`mailto:${profile.email}`}
                   className="flex h-11 items-center justify-center rounded-full bg-accent text-sm font-medium text-white"

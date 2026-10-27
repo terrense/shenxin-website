@@ -12,13 +12,26 @@ import { ui, type UIKey } from './dictionary';
 
 const STORAGE_KEY = 'portfolio.locale';
 
+/** BCP 47 tags, for the `lang` attribute and `Intl` formatting. */
+export const LOCALE_TAGS: Record<Locale, string> = {
+  en: 'en',
+  zh: 'zh-CN',
+  ru: 'ru-RU',
+};
+
+/** Short labels for the language switcher, in the language itself. */
+export const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'EN',
+  zh: '中文',
+  ru: 'RU',
+};
+
 type LocaleContextValue = {
   locale: Locale;
   setLocale: (next: Locale) => void;
-  toggle: () => void;
   /** UI chrome lookup. */
   ui: (key: UIKey) => string;
-  /** Localised content lookup. */
+  /** Localised content lookup, falling back to English. */
   tl: (value: L | undefined) => string;
 };
 
@@ -35,9 +48,15 @@ function detectLocale(): Locale {
   } catch {
     // Private mode / storage disabled — fall through to language sniffing.
   }
-  // English is the primary language; only switch for an explicit Chinese pref.
+  // English is the primary language; only switch on an explicit preference.
   const prefers = window.navigator.languages ?? [window.navigator.language];
-  return prefers.some((lang) => lang?.toLowerCase().startsWith('zh')) ? 'zh' : 'en';
+  for (const lang of prefers) {
+    const tag = lang?.toLowerCase() ?? '';
+    if (tag.startsWith('zh')) return 'zh';
+    if (tag.startsWith('ru')) return 'ru';
+    if (tag.startsWith('en')) return 'en';
+  }
+  return 'en';
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
@@ -52,17 +71,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const toggle = useCallback(
-    () => setLocale(locale === 'en' ? 'zh' : 'en'),
-    [locale, setLocale],
-  );
-
   // Keep the document in sync so screen readers and search engines agree with
   // what is rendered.
   useEffect(() => {
     const root = document.documentElement;
-    root.lang = locale === 'zh' ? 'zh-CN' : 'en';
-    // Chinese body copy needs slightly looser leading at the same size.
+    root.lang = LOCALE_TAGS[locale];
+    // Chinese body copy needs looser leading at the same size; see index.css.
     root.dataset.locale = locale;
   }, [locale]);
 
@@ -70,11 +84,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     () => ({
       locale,
       setLocale,
-      toggle,
       ui: (key) => ui[key][locale] ?? ui[key].en,
       tl: (v) => (v ? (v[locale] ?? v.en) : ''),
     }),
-    [locale, setLocale, toggle],
+    [locale, setLocale],
   );
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;

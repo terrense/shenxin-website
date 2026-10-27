@@ -63,10 +63,9 @@ export const accentClasses: Record<
 /**
  * Bento footprint → grid span classes, against a 6-column desktop grid.
  *
- * The declared order of featured projects is `anchor, tall, wide, cell, cell,
- * wide`, which tiles a 6-wide grid with no holes and an alternating 4/2 · 2/4
- * rhythm. Changing the order means re-checking the fill.
- * Mobile collapses to one column; `md` goes to 6 with a single 2-up row.
+ * The declared order of featured projects must tile the grid without holes —
+ * see the note in src/content/index.ts. Mobile collapses to one column; `md`
+ * goes to 6 with a single 2-up row.
  */
 export const bentoSpan: Record<string, string> = {
   anchor: 'md:col-span-6 lg:col-span-4 lg:row-span-2',
@@ -75,10 +74,19 @@ export const bentoSpan: Record<string, string> = {
   cell: 'md:col-span-3 lg:col-span-2',
 };
 
+/** BCP 47 tags for `Intl` formatting, per locale. */
+const DATE_TAGS: Record<Locale, string> = {
+  // en-GB rather than en-US: day-month-year avoids the 03/04 ambiguity for a
+  // readership that is mostly not American.
+  en: 'en-GB',
+  zh: 'zh-CN',
+  ru: 'ru-RU',
+};
+
 export function formatDate(iso: string, locale: Locale): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  return new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-GB', {
+  return new Intl.DateTimeFormat(DATE_TAGS[locale], {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

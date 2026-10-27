@@ -10,14 +10,29 @@
  * toggle can never fall back to a missing key.
  */
 
-export type Locale = 'en' | 'zh';
+export type Locale = 'en' | 'zh' | 'ru';
 
-export const LOCALES: readonly Locale[] = ['en', 'zh'] as const;
+export const LOCALES: readonly Locale[] = ['en', 'zh', 'ru'] as const;
 
-/** A localised string. Both languages are required — that is the point. */
-export type L = { en: string; zh: string };
+/**
+ * A localised string.
+ *
+ * English and Chinese are required; Russian is optional and falls back to
+ * English when absent.
+ *
+ * The asymmetry is deliberate. Requiring `ru` everywhere would be the tidier
+ * type, but it would mean no Russian string could ship until all ~600 of them
+ * existed — and a wrong translation in a technical case study is worse than
+ * an untranslated one. Optional `ru` lets the interface and the high-traffic
+ * content be Russian today while the long-form prose is translated and
+ * reviewed, without the site ever showing an empty string.
+ *
+ * `npm run check:i18n` reports Russian coverage so the gap stays visible
+ * rather than quietly becoming permanent.
+ */
+export type L = { en: string; zh: string; ru?: string };
 
-/** Resolve a localised string. */
+/** Resolve a localised string, falling back to English. */
 export const t = (value: L, locale: Locale): string => value[locale] ?? value.en;
 
 export type Domain = 'agentic' | 'rl' | 'robotics' | 'embodied' | 'healthcare' | 'infra';
