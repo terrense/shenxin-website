@@ -141,8 +141,8 @@ export const domainSections: DomainSection[] = [
         id: 'clinical-fusion',
         label: { en: 'Evidence pipeline', zh: '证据流水线' },
         caption: {
-          en: 'Modalities become typed, timestamped evidence spans before generation — so any sentence resolves to the second of audio or the record field that produced it.',
-          zh: '各模态在生成前先成为带类型、带时间戳的证据片段——于是任何一句话都能追溯到产生它的那一秒音频或那个病历字段。',
+          en: 'Speech and hospital records become typed, timestamped evidence spans before generation — so any answer resolves to the second of audio or the record field that produced it.',
+          zh: '语音与医院信息在生成前先成为带类型、带时间戳的证据片段——于是任何一条回答都能追溯到产生它的那一秒音频或那个信息字段。',
         },
       },
     ],
@@ -150,25 +150,25 @@ export const domainSections: DomainSection[] = [
       {
         label: { en: 'Make the failure unrepresentable', zh: '让失效无法被表示' },
         body: {
-          en: 'A claim with an empty evidence list cannot be serialised, so "forgot to cite" never reaches a clinician. That moves a whole failure class from "detect and alert" to "impossible" — the only move that scales in a safety-relevant pipeline.',
-          zh: '证据列表为空的陈述无法被序列化，因此"忘记引用"永远到不了医生面前。这把一整类失效从"检测并告警"搬到了"不可能发生"——在安全相关的流水线里，这是唯一可扩展的做法。',
+          en: 'An answer with an empty evidence list cannot be serialised, and the intent enum has no diagnosis member — so a diagnostic answer has nowhere to live. That moves two failure classes from "detect and alert" to "impossible", the only move that scales in a safety-relevant system.',
+          zh: '证据列表为空的回答无法被序列化，而 intent 枚举中没有"诊断"这一项——诊断性回答因此无处容身。这把两类失效从"检测并告警"搬到了"不可能发生"，在安全相关的系统里，这是唯一可扩展的做法。',
         },
       },
       {
         label: {
-          en: 'Abstention needs a UI, not an error path',
-          zh: '拒答需要界面，而不是错误分支',
+          en: 'Escalation needs a UI, not an error path',
+          zh: '转人工需要界面，而不是错误分支',
         },
         body: {
-          en: 'Returning nothing for an uncertain field tested worse than a wrong answer: a blank field is indistinguishable from one nobody looked at. Abstentions are now a visible worklist — "I could not establish X, here is what I searched."',
-          zh: '对不确定的字段返回空值，测试效果比给出错误答案更差：空字段和没人看过的字段无法区分。现在拒答是一份可见的待办清单——"我无法确认 X，以下是我检索过的内容。"',
+          en: 'Apologising and stopping tested worse than a wrong answer: it leaves the patient exactly where they started, still in the queue. Escalation is now a visible hand-off — "I cannot answer that, here is the desk that can, and here is what I already recorded."',
+          zh: '道歉然后停下，测试效果比给出错误答案更差：患者还停在原地，仍在排队。现在转人工是一次可见的交接——"这个问题我无法回答，能回答的是这个窗口，以及我已经为你记录好的内容。"',
         },
       },
       {
         label: { en: 'Provenance beats representational power', zh: '来源可溯胜过表示能力' },
         body: {
-          en: 'A jointly trained multimodal encoder would almost certainly score better. But once a claim is a vector you cannot say which modality produced it — and the requirement here is not "be accurate", it is "be answerable".',
-          zh: '联合训练的多模态编码器几乎肯定分数更高。但一旦一条陈述变成向量，你就无法说出它来自哪个模态——而这里的要求不是"准确"，而是"可被问责"。',
+          en: 'A jointly trained encoder would almost certainly score better. But once an answer is a vector you cannot say which record produced it or when that record was last correct — and a department that moved last month is exactly the staleness that makes a confident answer harmful.',
+          zh: '联合训练的编码器几乎肯定分数更高。但一旦回答变成向量，你就无法说出它来自哪条记录、那条记录最后一次正确是在何时——而一个上个月刚搬走的科室，正是那种会让自信回答变得有害的过期性。',
         },
       },
     ],
