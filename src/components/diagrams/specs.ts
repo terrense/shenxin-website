@@ -9,6 +9,12 @@ import type { DiagramSpec } from './FlowDiagram';
  * line is the clearest thing a diagram can be — the container scrolls
  * horizontally on narrow screens rather than wrapping into an S-shape that
  * nobody can follow.
+ *
+ * Node labels and `sub` strings are tight on space — they sit inside a fixed
+ * box. Russian runs long, so the translations here are shorter than a literal
+ * rendering would be; where a term is an identifier in the codebase
+ * (`T_base_tool`, `vLLM`, `manifest.json`) it stays untranslated in every
+ * language, because translating an identifier makes it unsearchable.
  */
 
 const postTraining: DiagramSpec = {
@@ -23,18 +29,28 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'signal',
-      label: { en: 'Data curation', zh: '数据治理' },
-      sub: { en: 'manifest + hash', zh: 'manifest + 哈希' },
+      label: { en: 'Data curation', zh: '数据治理', ru: 'Подготовка данных' },
+      sub: { en: 'manifest + hash', zh: 'manifest + 哈希', ru: 'манифест + хеш' },
       detail: {
         body: {
           en: 'Dedup, decontaminate against the eval sets, and pin a content hash. Nothing enters a training run without a hash, because a dataset that changed quietly is indistinguishable from a model that got worse.',
           zh: '去重、针对评测集做去污染、固定内容哈希。没有哈希的数据不得进入任何训练——因为一个被静默改动过的数据集，和一个变差了的模型，是无法区分的。',
+          ru: 'Дедупликация, очистка от пересечений с оценочными наборами и фиксация хеша содержимого. Без хеша ничто не попадает в обучающий запуск: набор данных, который тихо изменился, неотличим от модели, которая стала хуже.',
         },
-        takes: { en: 'Raw collections, preference logs', zh: '原始语料、偏好日志' },
-        emits: { en: 'Sharded JSONL + manifest.json', zh: '分片 JSONL + manifest.json' },
+        takes: {
+          en: 'Raw collections, preference logs',
+          zh: '原始语料、偏好日志',
+          ru: 'Сырые коллекции, логи предпочтений',
+        },
+        emits: {
+          en: 'Sharded JSONL + manifest.json',
+          zh: '分片 JSONL + manifest.json',
+          ru: 'Шардированный JSONL + manifest.json',
+        },
         risk: {
           en: 'Eval leakage; silent dataset drift',
           zh: '评测集泄漏；数据集静默漂移',
+          ru: 'Утечка оценочных данных; тихий дрейф набора',
         },
       },
     },
@@ -45,16 +61,29 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'signal',
-      label: { en: 'SFT', zh: '监督微调' },
-      sub: { en: 'LoRA r=32', zh: 'LoRA r=32' },
+      label: { en: 'SFT', zh: '监督微调', ru: 'SFT' },
+      sub: { en: 'LoRA r=32', zh: 'LoRA r=32', ru: 'LoRA r=32' },
       detail: {
         body: {
           en: 'Supervised fine-tune with sequence packing into 4096-token bins — about a third fewer steps at identical token throughput. Attention masks are rebuilt per bin; getting that wrong leaks context across samples.',
           zh: '监督微调，并把样本打包进 4096-token 的 bin——在相同 token 吞吐下步数减少约三分之一。注意力掩码按 bin 重建；写错会让上下文在样本间泄漏。',
+          ru: 'Супервизируемое дообучение с упаковкой последовательностей в бины по 4096 токенов — примерно на треть меньше шагов при той же пропускной способности по токенам. Маски внимания перестраиваются для каждого бина; ошибка здесь приводит к утечке контекста между примерами.',
         },
-        takes: { en: 'Curated instruction data', zh: '经治理的指令数据' },
-        emits: { en: 'Adapter weights + tokenizer', zh: 'Adapter 权重 + tokenizer' },
-        risk: { en: 'Cross-sample attention leakage', zh: '跨样本注意力泄漏' },
+        takes: {
+          en: 'Curated instruction data',
+          zh: '经治理的指令数据',
+          ru: 'Отобранные инструктивные данные',
+        },
+        emits: {
+          en: 'Adapter weights + tokenizer',
+          zh: 'Adapter 权重 + tokenizer',
+          ru: 'Веса адаптера + токенизатор',
+        },
+        risk: {
+          en: 'Cross-sample attention leakage',
+          zh: '跨样本注意力泄漏',
+          ru: 'Утечка внимания между примерами',
+        },
       },
     },
     {
@@ -64,18 +93,20 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'flux',
-      label: { en: 'Reward model', zh: '奖励模型' },
-      sub: { en: 'Bradley–Terry', zh: 'Bradley–Terry' },
+      label: { en: 'Reward model', zh: '奖励模型', ru: 'Модель награды' },
+      sub: { en: 'Bradley–Terry', zh: 'Bradley–Terry', ru: 'Брэдли — Терри' },
       detail: {
         body: {
           en: 'Initialised from the SFT checkpoint so the tokenizer and embeddings match — a mismatch here needs a remap and costs more than the training. Pairwise loss with a small margin.',
           zh: '从 SFT checkpoint 初始化，使 tokenizer 与嵌入对齐——这里不匹配就需要重映射，代价比训练本身更高。采用带小 margin 的 pairwise 损失。',
+          ru: 'Инициализируется из чекпоинта SFT, чтобы совпадали токенизатор и эмбеддинги: несовпадение здесь требует перестроения отображения и стоит дороже самого обучения. Попарная функция потерь с небольшим зазором.',
         },
-        takes: { en: 'Pairwise preferences', zh: '成对偏好数据' },
-        emits: { en: 'Scalar reward head', zh: '标量奖励头' },
+        takes: { en: 'Pairwise preferences', zh: '成对偏好数据', ru: 'Попарные предпочтения' },
+        emits: { en: 'Scalar reward head', zh: '标量奖励头', ru: 'Скалярная голова награды' },
         risk: {
           en: 'Length bias learned as quality',
           zh: '把长度偏好学成了质量偏好',
+          ru: 'Длина выучена как признак качества',
         },
       },
     },
@@ -86,18 +117,24 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'flux',
-      label: { en: 'GRPO', zh: 'GRPO' },
-      sub: { en: 'group = 8, KL 0.04', zh: 'group = 8, KL 0.04' },
+      label: { en: 'GRPO', zh: 'GRPO', ru: 'GRPO' },
+      sub: { en: 'group = 8, KL 0.04', zh: 'group = 8, KL 0.04', ru: 'группа = 8, KL 0,04' },
       detail: {
         body: {
           en: 'Group-relative policy optimisation: no value network to tune or hold in memory, which is what makes single-node training fit. Rollouts come from a separate vLLM worker so the training GPUs never idle on generation.',
           zh: '组相对策略优化：无需调试或驻留价值网络，这正是单节点训练能装下的原因。Rollout 由独立的 vLLM worker 产生，使训练 GPU 不会因生成而空转。',
+          ru: 'Групповая относительная оптимизация политики: нет сети ценности, которую надо настраивать и держать в памяти, — именно это позволяет уместить обучение на одном узле. Роллауты приходят от отдельного воркера vLLM, поэтому обучающие GPU не простаивают на генерации.',
         },
-        takes: { en: 'SFT policy + reward head', zh: 'SFT 策略 + 奖励头' },
-        emits: { en: 'Optimised policy', zh: '优化后的策略' },
+        takes: {
+          en: 'SFT policy + reward head',
+          zh: 'SFT 策略 + 奖励头',
+          ru: 'Политика SFT + голова награды',
+        },
+        emits: { en: 'Optimised policy', zh: '优化后的策略', ru: 'Оптимизированная политика' },
         risk: {
           en: 'Entropy collapse below KL 0.02',
           zh: 'KL 低于 0.02 时熵坍缩',
+          ru: 'Схлопывание энтропии при KL ниже 0,02',
         },
       },
     },
@@ -108,16 +145,25 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'ember',
-      label: { en: 'Evaluation', zh: '评测' },
-      sub: { en: 'pinned judge', zh: '固定版评判模型' },
+      label: { en: 'Evaluation', zh: '评测', ru: 'Оценка' },
+      sub: { en: 'pinned judge', zh: '固定版评判模型', ru: 'зафиксированный судья' },
       detail: {
         body: {
           en: 'Fixed prompts, fixed seeds, a locally pinned judge model and bootstrap confidence intervals. A judge that silently updates turns every historical number into fiction, which is why this one never moves without a version bump.',
           zh: '固定 prompt、固定种子、本地固定版本的评判模型，以及 bootstrap 置信区间。一个会静默更新的评判模型会把所有历史数字变成虚构——所以这个模型不升版本就绝不改动。',
+          ru: 'Фиксированные промпты, фиксированные сиды, локально зафиксированная модель-судья и бутстреп-доверительные интервалы. Судья, который тихо обновляется, превращает все прошлые числа в выдумку, — поэтому этот не меняется без смены версии.',
         },
-        takes: { en: 'Any checkpoint', zh: '任意 checkpoint' },
-        emits: { en: 'Scores + CIs + length stats', zh: '分数 + 置信区间 + 长度统计' },
-        risk: { en: 'Judge drift; single-number reporting', zh: '评判模型漂移；只报单一数字' },
+        takes: { en: 'Any checkpoint', zh: '任意 checkpoint', ru: 'Любой чекпоинт' },
+        emits: {
+          en: 'Scores + CIs + length stats',
+          zh: '分数 + 置信区间 + 长度统计',
+          ru: 'Оценки + доверительные интервалы + статистика длин',
+        },
+        risk: {
+          en: 'Judge drift; single-number reporting',
+          zh: '评判模型漂移；只报单一数字',
+          ru: 'Дрейф судьи; отчёт одним числом',
+        },
       },
     },
     {
@@ -127,16 +173,25 @@ const postTraining: DiagramSpec = {
       w: 150,
       h: 94,
       accent: 'signal',
-      label: { en: 'Serving', zh: '推理部署' },
-      sub: { en: 'vLLM', zh: 'vLLM' },
+      label: { en: 'Serving', zh: '推理部署', ru: 'Инференс' },
+      sub: { en: 'vLLM', zh: 'vLLM', ru: 'vLLM' },
       detail: {
         body: {
           en: 'Merge adapters, quantise if the latency budget needs it, and re-run the eval suite against the served endpoint rather than the checkpoint. Serving-time regressions are real and the checkpoint will not show them.',
           zh: '合并 adapter，若延迟预算需要则量化，然后针对已部署的服务端点（而不是 checkpoint）重跑一遍评测。部署阶段的退化是真实存在的，而 checkpoint 看不出来。',
+          ru: 'Слить адаптеры, при необходимости квантовать под бюджет задержек и прогнать набор оценок по развёрнутому эндпоинту, а не по чекпоинту. Регрессии на этапе обслуживания реальны, и чекпоинт их не покажет.',
         },
-        takes: { en: 'Final policy', zh: '最终策略' },
-        emits: { en: 'OpenAI-compatible endpoint', zh: 'OpenAI 兼容端点' },
-        risk: { en: 'Quantisation regressions unmeasured', zh: '量化引入的退化未被测量' },
+        takes: { en: 'Final policy', zh: '最终策略', ru: 'Итоговая политика' },
+        emits: {
+          en: 'OpenAI-compatible endpoint',
+          zh: 'OpenAI 兼容端点',
+          ru: 'Эндпоинт, совместимый с OpenAI',
+        },
+        risk: {
+          en: 'Quantisation regressions unmeasured',
+          zh: '量化引入的退化未被测量',
+          ru: 'Регрессии от квантования не измерены',
+        },
       },
     },
   ],
@@ -151,7 +206,7 @@ const postTraining: DiagramSpec = {
       to: 'data',
       kind: 'feedback',
       dashed: true,
-      label: { en: 'failures → new data', zh: '失败样本 → 新数据' },
+      label: { en: 'failures → new data', zh: '失败样本 → 新数据', ru: 'отказы → новые данные' },
     },
   ],
 };
@@ -168,14 +223,15 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'signal',
-      label: { en: 'Turn input', zh: '轮次输入' },
-      sub: { en: 'user or schedule', zh: '用户或定时' },
+      label: { en: 'Turn input', zh: '轮次输入', ru: 'Вход хода' },
+      sub: { en: 'user or schedule', zh: '用户或定时', ru: 'пользователь или расписание' },
       detail: {
         body: {
           en: 'A turn begins from a user message or a scheduled trigger. Either way it gets an id immediately, because the id is what every later artifact is filed under.',
           zh: '一轮从用户消息或定时触发开始。无论哪种，它都会立即获得一个 id——因为后续所有产物都以这个 id 归档。',
+          ru: 'Ход начинается с сообщения пользователя или срабатывания по расписанию. В любом случае он сразу получает идентификатор, потому что именно по нему подшиваются все последующие артефакты.',
         },
-        emits: { en: 'turn_id', zh: 'turn_id' },
+        emits: { en: 'turn_id', zh: 'turn_id', ru: 'turn_id' },
       },
     },
     {
@@ -185,16 +241,25 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'flux',
-      label: { en: 'Planner', zh: '规划器' },
-      sub: { en: 'no tool output', zh: '看不到工具输出' },
+      label: { en: 'Planner', zh: '规划器', ru: 'Планировщик' },
+      sub: { en: 'no tool output', zh: '看不到工具输出', ru: 'не видит вывод инструментов' },
       detail: {
         body: {
           en: 'Decides the next action from the goal and memory — and deliberately cannot see raw tool output. A planner that sees a failed tool result tends to rationalise it into a plausible-sounding success, which is the most common long-horizon failure I have observed.',
           zh: '根据目标与记忆决定下一步动作——并且刻意看不到原始工具输出。能看到失败工具结果的规划器，倾向于把它合理化成一个听起来可信的成功，这是我观察到的最常见的长程失效模式。',
+          ru: 'Решает, каким будет следующее действие, исходя из цели и памяти, — и намеренно не видит сырой вывод инструментов. Планировщик, который видит неудачный результат инструмента, склонен рационализировать его в правдоподобно звучащий успех; это самый частый режим отказа на длинном горизонте, который я наблюдал.',
         },
-        takes: { en: 'Goal + memory reads', zh: '目标 + 记忆读取' },
-        emits: { en: 'Typed action request', zh: '带类型的动作请求' },
-        risk: { en: 'Rationalising failures as progress', zh: '把失败合理化为进展' },
+        takes: { en: 'Goal + memory reads', zh: '目标 + 记忆读取', ru: 'Цель + чтения из памяти' },
+        emits: {
+          en: 'Typed action request',
+          zh: '带类型的动作请求',
+          ru: 'Типизированный запрос действия',
+        },
+        risk: {
+          en: 'Rationalising failures as progress',
+          zh: '把失败合理化为进展',
+          ru: 'Отказы выдаются за прогресс',
+        },
       },
     },
     {
@@ -204,16 +269,21 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'flux',
-      label: { en: 'Executor', zh: '执行器' },
-      sub: { en: 'schema in / out', zh: '入参 / 出参校验' },
+      label: { en: 'Executor', zh: '执行器', ru: 'Исполнитель' },
+      sub: { en: 'schema in / out', zh: '入参 / 出参校验', ru: 'схема на входе / выходе' },
       detail: {
         body: {
           en: 'Validates arguments against the tool schema before the call and the result before it re-enters context. A tool returning malformed data fails at this boundary instead of poisoning the next three turns.',
           zh: '调用前依据工具 schema 校验参数，结果重新进入上下文前再校验一次。返回畸形数据的工具在这个边界失败，而不是污染接下来三轮。',
+          ru: 'Проверяет аргументы по схеме инструмента до вызова и результат — до того, как он вернётся в контекст. Инструмент, вернувший некорректные данные, падает на этой границе, а не отравляет следующие три хода.',
         },
-        takes: { en: 'Action request', zh: '动作请求' },
-        emits: { en: 'Validated observation', zh: '已校验的观测' },
-        risk: { en: 'Unvalidated output entering context', zh: '未校验的输出进入上下文' },
+        takes: { en: 'Action request', zh: '动作请求', ru: 'Запрос действия' },
+        emits: { en: 'Validated observation', zh: '已校验的观测', ru: 'Проверенное наблюдение' },
+        risk: {
+          en: 'Unvalidated output entering context',
+          zh: '未校验的输出进入上下文',
+          ru: 'Непроверенный вывод попадает в контекст',
+        },
       },
     },
     {
@@ -223,14 +293,15 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'signal',
-      label: { en: 'Tools (MCP)', zh: '工具（MCP）' },
-      sub: { en: 'portable contracts', zh: '可移植契约' },
+      label: { en: 'Tools (MCP)', zh: '工具（MCP）', ru: 'Инструменты (MCP)' },
+      sub: { en: 'portable contracts', zh: '可移植契约', ru: 'переносимые контракты' },
       detail: {
         body: {
           en: 'Tools speak MCP rather than a bespoke plugin API, so anything written for this runtime works elsewhere. A private plugin format is a tax paid forever for a week of early convenience.',
           zh: '工具使用 MCP 而非自定义插件 API，因此为这个运行时写的东西在别处也能用。私有插件格式是为早期一周的便利而永久缴纳的税。',
+          ru: 'Инструменты говорят на MCP, а не на самодельном plugin API, поэтому написанное для этой среды работает и в другой. Собственный формат плагинов — это налог, который платишь вечно за неделю удобства на старте.',
         },
-        emits: { en: 'Raw tool result', zh: '原始工具结果' },
+        emits: { en: 'Raw tool result', zh: '原始工具结果', ru: 'Сырой результат инструмента' },
       },
     },
     {
@@ -240,16 +311,25 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'ember',
-      label: { en: 'Memory', zh: '记忆' },
-      sub: { en: 'files + FTS', zh: '文件 + 全文索引' },
+      label: { en: 'Memory', zh: '记忆', ru: 'Память' },
+      sub: { en: 'files + FTS', zh: '文件 + 全文索引', ru: 'файлы + полнотекстовый индекс' },
       detail: {
         body: {
           en: 'Durable memory is a directory of small markdown files indexed by SQLite FTS — human-readable, diffable, and unaffected by an embedding-model change. Assembly order is fixed and recorded, because replays showed results shift more with ordering than I expected.',
           zh: '持久记忆是一个目录，内含由 SQLite FTS 建索引的小 markdown 文件——人可读、可 diff，且不受更换嵌入模型影响。组装顺序是固定且被记录的，因为回放实验显示结果对顺序的敏感性超出预期。',
+          ru: 'Долговременная память — это каталог небольших markdown-файлов, проиндексированных через SQLite FTS: читаемых человеком, пригодных для diff и не зависящих от смены модели эмбеддингов. Порядок сборки фиксирован и записывается, потому что повторные прогоны показали: результат зависит от порядка сильнее, чем я ожидал.',
         },
-        takes: { en: 'Write requests', zh: '写入请求' },
-        emits: { en: 'Ordered memory slice', zh: '有序的记忆切片' },
-        risk: { en: 'Non-deterministic assembly order', zh: '组装顺序非确定' },
+        takes: { en: 'Write requests', zh: '写入请求', ru: 'Запросы на запись' },
+        emits: {
+          en: 'Ordered memory slice',
+          zh: '有序的记忆切片',
+          ru: 'Упорядоченный срез памяти',
+        },
+        risk: {
+          en: 'Non-deterministic assembly order',
+          zh: '组装顺序非确定',
+          ru: 'Недетерминированный порядок сборки',
+        },
       },
     },
     {
@@ -259,22 +339,31 @@ const agentRuntime: DiagramSpec = {
       w: 170,
       h: 92,
       accent: 'signal',
-      label: { en: 'Trace store', zh: '轨迹存储' },
-      sub: { en: 'resolved prompts', zh: '已解析的 prompt' },
+      label: { en: 'Trace store', zh: '轨迹存储', ru: 'Хранилище трасс' },
+      sub: { en: 'resolved prompts', zh: '已解析的 prompt', ru: 'развёрнутые промпты' },
       detail: {
         body: {
           en: 'The architecture. Every turn appends an immutable record holding the fully-resolved prompt bytes — not the template — plus model id, sampling params, every tool call and the memory reads that informed it. A bug report becomes a trace id, and a trace id becomes a test case.',
           zh: '这就是整个架构。每一轮追加一条不可变记录，内含完全解析后的 prompt 字节——不是模板——加上模型 id、采样参数、每次工具调用，以及支撑这一轮的记忆读取。于是 bug 报告变成一个轨迹 id，而轨迹 id 变成一个测试用例。',
+          ru: 'Это и есть вся архитектура. Каждый ход добавляет неизменяемую запись с полностью развёрнутыми байтами промпта — не шаблоном — плюс идентификатор модели, параметры сэмплирования, все вызовы инструментов и те чтения из памяти, на которых всё держалось. Баг-репорт превращается в идентификатор трассы, а идентификатор трассы — в тест.',
         },
-        takes: { en: 'Everything, append-only', zh: '一切，仅追加' },
-        emits: { en: 'Deterministic replay', zh: '确定性回放' },
-        risk: { en: 'Logging templates instead of bytes', zh: '记录了模板而不是字节' },
+        takes: { en: 'Everything, append-only', zh: '一切，仅追加', ru: 'Всё, только добавление' },
+        emits: {
+          en: 'Deterministic replay',
+          zh: '确定性回放',
+          ru: 'Детерминированное воспроизведение',
+        },
+        risk: {
+          en: 'Logging templates instead of bytes',
+          zh: '记录了模板而不是字节',
+          ru: 'В лог попал шаблон, а не байты',
+        },
       },
     },
   ],
   edges: [
     { from: 'turn', to: 'planner' },
-    { from: 'planner', to: 'executor', label: { en: 'action', zh: '动作' } },
+    { from: 'planner', to: 'executor', label: { en: 'action', zh: '动作', ru: 'действие' } },
     { from: 'executor', to: 'tools' },
     { from: 'executor', to: 'memory' },
     { from: 'tools', to: 'trace' },
@@ -283,7 +372,11 @@ const agentRuntime: DiagramSpec = {
       from: 'trace',
       to: 'planner',
       kind: 'feedback',
-      label: { en: 'observation (validated)', zh: '观测（已校验）' },
+      label: {
+        en: 'observation (validated)',
+        zh: '观测（已校验）',
+        ru: 'наблюдение (проверенное)',
+      },
     },
   ],
 };
@@ -300,14 +393,19 @@ const eyeInHand: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'signal',
-      label: { en: 'Robot base', zh: '机器人基座' },
-      sub: { en: 'world frame', zh: '世界坐标系' },
+      label: { en: 'Robot base', zh: '机器人基座', ru: 'Основание робота' },
+      sub: { en: 'world frame', zh: '世界坐标系', ru: 'мировая система координат' },
       detail: {
         body: {
           en: 'The fixed reference everything resolves into. Every transform in the codebase is named T_destination_source, so composition reads left to right and a reversed multiplication is visually obvious at review time.',
           zh: '一切最终归算到的固定参考系。代码库中每个变换都命名为 T_destination_source，于是复合运算从左到右读，乘反了在评审时一眼可见。',
+          ru: 'Фиксированная система отсчёта, в которую всё в конечном счёте приводится. Каждое преобразование в коде названо T_destination_source, поэтому композиция читается слева направо, и перевёрнутое умножение видно глазом на ревью.',
         },
-        emits: { en: 'T_base_tool (from encoders)', zh: 'T_base_tool（来自编码器）' },
+        emits: {
+          en: 'T_base_tool (from encoders)',
+          zh: 'T_base_tool（来自编码器）',
+          ru: 'T_base_tool (с энкодеров)',
+        },
       },
     },
     {
@@ -317,16 +415,21 @@ const eyeInHand: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'signal',
-      label: { en: 'Tool flange', zh: '末端法兰' },
-      sub: { en: '30004 @ 8 ms', zh: '30004 @ 8 ms' },
+      label: { en: 'Tool flange', zh: '末端法兰', ru: 'Фланец инструмента' },
+      sub: { en: '30004 @ 8 ms', zh: '30004 @ 8 ms', ru: '30004 @ 8 мс' },
       detail: {
         body: {
           en: 'Pose read from the controller real-time channel at 8 ms per frame. Capture only happens after the arm has come to a full stop — a pose sampled mid-motion carries a timestamp mismatch that looks exactly like calibration error.',
           zh: '位姿从控制柜实时通道读取，每帧 8 ms。只有在机械臂完全停稳后才采集——运动过程中采样的位姿带有时间戳错配，而它看起来和标定误差一模一样。',
+          ru: 'Поза считывается из канала реального времени контроллера, 8 мс на кадр. Съёмка идёт только после полной остановки манипулятора: поза, взятая в движении, несёт расхождение по времени, которое выглядит в точности как ошибка калибровки.',
         },
-        takes: { en: 'Joint encoders', zh: '关节编码器' },
-        emits: { en: 'T_base_tool', zh: 'T_base_tool' },
-        risk: { en: 'Sampling before the arm settles', zh: '机械臂未停稳就采样' },
+        takes: { en: 'Joint encoders', zh: '关节编码器', ru: 'Энкодеры суставов' },
+        emits: { en: 'T_base_tool', zh: 'T_base_tool', ru: 'T_base_tool' },
+        risk: {
+          en: 'Sampling before the arm settles',
+          zh: '机械臂未停稳就采样',
+          ru: 'Съёмка до полной остановки манипулятора',
+        },
       },
     },
     {
@@ -336,17 +439,27 @@ const eyeInHand: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'flux',
-      label: { en: 'Stereo camera', zh: '双目相机' },
-      sub: { en: 'T_tool_camera — unknown', zh: 'T_tool_camera — 待求' },
+      label: { en: 'Stereo camera', zh: '双目相机', ru: 'Стереокамера' },
+      sub: {
+        en: 'T_tool_camera — unknown',
+        zh: 'T_tool_camera — 待求',
+        ru: 'T_tool_camera — неизвестно',
+      },
       detail: {
         body: {
           en: 'The quantity being solved for. Two MV-CS060-10UC heads mounted on the flange; the left is the hand-eye primary. Images are de-rotated at the capture boundary (left +90°, right −90°) so nothing downstream carries an orientation special case.',
           zh: '这就是要求解的量。两台 MV-CS060-10UC 安装在法兰上，左相机为手眼主相机。图像在采集边界完成旋转归一（左 +90°、右 −90°），使下游任何环节都不必处理朝向特例。',
+          ru: 'Искомая величина. Две головы MV-CS060-10UC закреплены на фланце; левая — основная для hand-eye. Изображения разворачиваются на границе захвата (левое +90°, правое −90°), чтобы дальше по тракту нигде не возникало особого случая по ориентации.',
         },
-        emits: { en: 'Synchronised stereo pair', zh: '同步双目图像对' },
+        emits: {
+          en: 'Synchronised stereo pair',
+          zh: '同步双目图像对',
+          ru: 'Синхронная стереопара',
+        },
         risk: {
           en: 'Degenerate pose sets → low residual, wrong transform',
           zh: '退化位姿集 → 低残差、错变换',
+          ru: 'Вырожденный набор поз → малая невязка, неверное преобразование',
         },
       },
     },
@@ -357,22 +470,43 @@ const eyeInHand: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'ember',
-      label: { en: 'Checkerboard', zh: '标定板' },
-      sub: { en: '11×8, 20 mm', zh: '11×8，20 mm' },
+      label: { en: 'Checkerboard', zh: '标定板', ru: 'Калибровочная доска' },
+      sub: { en: '11×8, 20 mm', zh: '11×8，20 mm', ru: '11×8, 20 мм' },
       detail: {
         body: {
           en: 'Static in the world, so T_base_board is constant across every capture — which is exactly the constraint that makes the system solvable. Detected as 8×11 after de-rotation. All lengths are millimetres, converted once at the protocol edge.',
           zh: '在世界中静止，因此 T_base_board 在所有采集中保持恒定——正是这个约束让方程可解。旋转归一后按 8×11 检测。所有长度单位为毫米，仅在协议边界换算一次。',
+          ru: 'Неподвижна в мире, поэтому T_base_board постоянна для всех съёмок — именно это условие делает систему разрешимой. После разворота детектируется как 8×11. Все длины в миллиметрах, перевод выполняется один раз на границе протокола.',
         },
-        emits: { en: 'T_camera_board (PnP)', zh: 'T_camera_board（PnP）' },
-        risk: { en: 'Mixed units; partial corner detection', zh: '单位混用；角点检测不全' },
+        emits: {
+          en: 'T_camera_board (PnP)',
+          zh: 'T_camera_board（PnP）',
+          ru: 'T_camera_board (PnP)',
+        },
+        risk: {
+          en: 'Mixed units; partial corner detection',
+          zh: '单位混用；角点检测不全',
+          ru: 'Смешение единиц; неполная детекция углов',
+        },
       },
     },
   ],
   edges: [
-    { from: 'base', to: 'flange', label: { en: 'T_base_tool', zh: 'T_base_tool' } },
-    { from: 'flange', to: 'camera', label: { en: 'T_tool_camera', zh: 'T_tool_camera' } },
-    { from: 'camera', to: 'board', label: { en: 'T_camera_board', zh: 'T_camera_board' } },
+    {
+      from: 'base',
+      to: 'flange',
+      label: { en: 'T_base_tool', zh: 'T_base_tool', ru: 'T_base_tool' },
+    },
+    {
+      from: 'flange',
+      to: 'camera',
+      label: { en: 'T_tool_camera', zh: 'T_tool_camera', ru: 'T_tool_camera' },
+    },
+    {
+      from: 'camera',
+      to: 'board',
+      label: { en: 'T_camera_board', zh: 'T_camera_board', ru: 'T_camera_board' },
+    },
     {
       from: 'board',
       to: 'base',
@@ -381,6 +515,7 @@ const eyeInHand: DiagramSpec = {
       label: {
         en: 'T_base_board — constant, closes the loop',
         zh: 'T_base_board — 恒定，闭合方程',
+        ru: 'T_base_board — постоянна, замыкает систему',
       },
     },
   ],
@@ -398,14 +533,19 @@ const sim2real: DiagramSpec = {
       w: 180,
       h: 92,
       accent: 'flux',
-      label: { en: 'Isaac Lab scene', zh: 'Isaac Lab 场景' },
-      sub: { en: 'trellis + canopy', zh: '棚架 + 树冠' },
+      label: { en: 'Isaac Lab scene', zh: 'Isaac Lab 场景', ru: 'Сцена в Isaac Lab' },
+      sub: { en: 'trellis + canopy', zh: '棚架 + 树冠', ru: 'шпалера + полог' },
       detail: {
         body: {
           en: 'A modelled vineyard row. I was initially sceptical this would transfer, and for policy learning it mostly did not — its real value turned out to be regression testing collision cases that are genuinely unsafe to reproduce on hardware.',
           zh: '建模出的一行葡萄架。我起初怀疑它能否迁移，而对策略学习来说它基本没迁移——它真正的价值在于：为那些在真机上复现确实不安全的碰撞场景做回归测试。',
+          ru: 'Смоделированный ряд виноградника. Сначала я сомневался, что это перенесётся, и для обучения политики в основном не перенеслось — реальной ценностью оказалось регрессионное тестирование столкновений, которые по-настоящему небезопасно воспроизводить на железе.',
         },
-        emits: { en: 'Scenes + ground-truth poses', zh: '场景 + 真值位姿' },
+        emits: {
+          en: 'Scenes + ground-truth poses',
+          zh: '场景 + 真值位姿',
+          ru: 'Сцены + эталонные позы',
+        },
       },
     },
     {
@@ -415,16 +555,25 @@ const sim2real: DiagramSpec = {
       w: 180,
       h: 92,
       accent: 'flux',
-      label: { en: 'Randomisation', zh: '域随机化' },
-      sub: { en: 'light · texture · mass', zh: '光照 · 纹理 · 质量' },
+      label: { en: 'Randomisation', zh: '域随机化', ru: 'Рандомизация домена' },
+      sub: { en: 'light · texture · mass', zh: '光照 · 纹理 · 质量', ru: 'свет · текстура · масса' },
       detail: {
         body: {
           en: 'Vary lighting, textures, friction and link masses. Lighting is the one that actually matters outdoors: the hardest real condition was dappled midday shadow, so that is the condition the randomiser oversamples.',
           zh: '随机化光照、纹理、摩擦与连杆质量。真正在户外起作用的是光照：最难的真实条件是正午斑驳阴影，所以随机化器对这一条件过采样。',
+          ru: 'Варьируются освещение, текстуры, трение и массы звеньев. На улице по-настоящему важно именно освещение: самым трудным реальным условием была пятнистая полуденная тень — её рандомизатор и сэмплирует с избытком.',
         },
-        takes: { en: 'Base scene', zh: '基础场景' },
-        emits: { en: 'Randomised episodes', zh: '随机化回合' },
-        risk: { en: 'Randomising what does not vary in reality', zh: '随机化了现实中不变的量' },
+        takes: { en: 'Base scene', zh: '基础场景', ru: 'Базовая сцена' },
+        emits: {
+          en: 'Randomised episodes',
+          zh: '随机化回合',
+          ru: 'Рандомизированные эпизоды',
+        },
+        risk: {
+          en: 'Randomising what does not vary in reality',
+          zh: '随机化了现实中不变的量',
+          ru: 'Рандомизируется то, что в реальности не меняется',
+        },
       },
     },
     {
@@ -434,15 +583,28 @@ const sim2real: DiagramSpec = {
       w: 180,
       h: 92,
       accent: 'signal',
-      label: { en: 'Policy / perception', zh: '策略 / 感知' },
-      sub: { en: 'learned perception only', zh: '仅学习式感知' },
+      label: { en: 'Policy / perception', zh: '策略 / 感知', ru: 'Политика / восприятие' },
+      sub: {
+        en: 'learned perception only',
+        zh: '仅学习式感知',
+        ru: 'обучается только восприятие',
+      },
       detail: {
         body: {
           en: 'Perception is learned; motion is classically planned. Learned perception is verifiable frame by frame. A learned motion policy operating next to a destructive failure mode is not something I could certify to the grower.',
           zh: '感知是学习来的；运动是经典规划的。学习式感知可以逐帧验证。而一个在破坏性失效模式旁边运行的学习式运动策略，是我没法向种植者做出保证的。',
+          ru: 'Восприятие обучается; движение планируется классически. Обученное восприятие проверяемо кадр за кадром. А обученную политику движения, работающую рядом с разрушительным режимом отказа, я не смог бы гарантировать виноградарю.',
         },
-        takes: { en: 'Randomised observations', zh: '随机化观测' },
-        emits: { en: 'ONNX / TensorRT engine', zh: 'ONNX / TensorRT 引擎' },
+        takes: {
+          en: 'Randomised observations',
+          zh: '随机化观测',
+          ru: 'Рандомизированные наблюдения',
+        },
+        emits: {
+          en: 'ONNX / TensorRT engine',
+          zh: 'ONNX / TensorRT 引擎',
+          ru: 'Движок ONNX / TensorRT',
+        },
       },
     },
     {
@@ -452,16 +614,25 @@ const sim2real: DiagramSpec = {
       w: 180,
       h: 92,
       accent: 'ember',
-      label: { en: 'Real arm', zh: '真机' },
-      sub: { en: 'CR10A · outdoors', zh: 'CR10A · 户外' },
+      label: { en: 'Real arm', zh: '真机', ru: 'Реальный манипулятор' },
+      sub: { en: 'CR10A · outdoors', zh: 'CR10A · 户外', ru: 'CR10A · в поле' },
       detail: {
         body: {
           en: 'Where the assumptions break. Sunlight, dust, wind moving the canopy between perception and execution, GPS degrading under the trellis. The staleness guard holds a safe pose rather than extrapolating a target into a 120 ms gap.',
           zh: '假设在这里崩塌。阳光、灰尘、在感知与执行之间吹动树冠的风、棚架下劣化的 GPS。过期保护会保持安全位姿，而不是把目标外推进一个 120 ms 的空窗。',
+          ru: 'Здесь предположения рушатся. Солнце, пыль, ветер, сдвигающий полог между восприятием и исполнением, ГНСС, деградирующая под шпалерой. Защита от устаревших данных удерживает безопасную позу, вместо того чтобы экстраполировать цель в окно 120 мс.',
         },
-        takes: { en: 'Engine + live stereo', zh: '引擎 + 实时双目' },
-        emits: { en: 'Synchronised run logs', zh: '同步运行日志' },
-        risk: { en: 'Acting on a stale world model', zh: '基于过期世界模型执行动作' },
+        takes: { en: 'Engine + live stereo', zh: '引擎 + 实时双目', ru: 'Движок + живое стерео' },
+        emits: {
+          en: 'Synchronised run logs',
+          zh: '同步运行日志',
+          ru: 'Синхронные логи прогона',
+        },
+        risk: {
+          en: 'Acting on a stale world model',
+          zh: '基于过期世界模型执行动作',
+          ru: 'Действие по устаревшей модели мира',
+        },
       },
     },
     {
@@ -471,29 +642,46 @@ const sim2real: DiagramSpec = {
       w: 180,
       h: 92,
       accent: 'signal',
-      label: { en: 'Replay harness', zh: '回放框架' },
-      sub: { en: 'frames + 125 Hz state', zh: '图像 + 125 Hz 状态' },
+      label: { en: 'Replay harness', zh: '回放框架', ru: 'Стенд воспроизведения' },
+      sub: {
+        en: 'frames + 125 Hz state',
+        zh: '图像 + 125 Hz 状态',
+        ru: 'кадры + состояние 125 Гц',
+      },
       detail: {
         body: {
           en: "Every run logs stereo frames, arm state at 125 Hz and the decision engine's scored target list. A logged failure is a test case; a remembered failure is an argument. Building this in month four instead of week one was the project's most expensive mistake.",
           zh: '每次运行都记录双目图像、125 Hz 的机械臂状态，以及决策引擎带评分的目标列表。被记录的失效是测试用例；被记住的失效只是争论。把它放到第四个月而不是第一周，是这个项目最昂贵的错误。',
+          ru: 'Каждый прогон пишет стереокадры, состояние манипулятора на 125 Гц и список целей с оценками от решающего модуля. Записанный отказ — это тест; запомненный отказ — это спор. Сделать это на четвёртом месяце, а не на первой неделе, было самой дорогой ошибкой проекта.',
         },
-        takes: { en: 'Field logs', zh: '田间日志' },
-        emits: { en: 'Regression fixtures', zh: '回归测试 fixture' },
+        takes: { en: 'Field logs', zh: '田间日志', ru: 'Логи с поля' },
+        emits: {
+          en: 'Regression fixtures',
+          zh: '回归测试 fixture',
+          ru: 'Фикстуры для регрессий',
+        },
       },
     },
   ],
   edges: [
     { from: 'scene', to: 'randomise' },
     { from: 'randomise', to: 'policy' },
-    { from: 'policy', to: 'hardware', label: { en: 'deploy', zh: '部署' } },
+    {
+      from: 'policy',
+      to: 'hardware',
+      label: { en: 'deploy', zh: '部署', ru: 'развёртывание' },
+    },
     { from: 'hardware', to: 'replay' },
     {
       from: 'replay',
       to: 'scene',
       kind: 'feedback',
       dashed: true,
-      label: { en: 'real failures become simulated test cases', zh: '真实失效 → 仿真测试用例' },
+      label: {
+        en: 'real failures become simulated test cases',
+        zh: '真实失效 → 仿真测试用例',
+        ru: 'реальные отказы → тесты в симуляции',
+      },
     },
   ],
 };
@@ -510,15 +698,24 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'signal',
-      label: { en: 'Patient speech', zh: '患者语音' },
-      sub: { en: 'domain-tuned ASR', zh: '领域微调 ASR' },
+      label: { en: 'Patient speech', zh: '患者语音', ru: 'Речь пациента' },
+      sub: { en: 'domain-tuned ASR', zh: '领域微调 ASR', ru: 'ASR, дообученная на домене' },
       detail: {
         body: {
           en: 'Fine-tuned rather than off-the-shelf, because department names, drug names and body-part terms are where general ASR fails — and they are the tokens the routing decision depends on. Every segment keeps its speaker and millisecond offset.',
           zh: '使用微调模型而非开箱即用，因为科室名、药名与身体部位术语正是通用 ASR 失手之处——而分诊决策恰恰依赖这些 token。每个片段保留其说话人与毫秒级偏移。',
+          ru: 'Дообученная, а не готовая из коробки: названия отделений, препаратов и частей тела — именно то, на чём общая ASR ошибается, и именно те токены, от которых зависит маршрутизация. Каждый фрагмент сохраняет говорящего и смещение в миллисекундах.',
         },
-        emits: { en: 'Transcript spans + offsets', zh: '转写片段 + 时间偏移' },
-        risk: { en: 'Accents; mid-sentence code-switching', zh: '口音；句中语码转换' },
+        emits: {
+          en: 'Transcript spans + offsets',
+          zh: '转写片段 + 时间偏移',
+          ru: 'Фрагменты расшифровки + смещения',
+        },
+        risk: {
+          en: 'Accents; mid-sentence code-switching',
+          zh: '口音；句中语码转换',
+          ru: 'Акценты; переключение языка внутри фразы',
+        },
       },
     },
     {
@@ -528,16 +725,25 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'flux',
-      label: { en: 'Language detection', zh: '语种识别' },
-      sub: { en: 'answer in kind', zh: '同语种作答' },
+      label: { en: 'Language detection', zh: '语种识别', ru: 'Определение языка' },
+      sub: { en: 'answer in kind', zh: '同语种作答', ru: 'ответ на том же языке' },
       detail: {
         body: {
           en: 'The language is detected and the answer is produced in it directly. Pivoting through a third language compounds two error rates on exactly the terms that matter most — department names, drug names, body parts.',
           zh: '识别语种后直接以该语种作答。经由第三语言中转，会在最关键的术语上叠加两道错误率——科室名、药名、身体部位。',
+          ru: 'Язык определяется, и ответ сразу формируется на нём. Промежуточный перевод через третий язык складывает две вероятности ошибки именно на самых важных терминах — названиях отделений, препаратов, частей тела.',
         },
-        takes: { en: 'Transcript spans', zh: '转写片段' },
-        emits: { en: 'Language-tagged spans', zh: '带语种标记的片段' },
-        risk: { en: 'Mid-sentence code-switching', zh: '句中语码转换' },
+        takes: { en: 'Transcript spans', zh: '转写片段', ru: 'Фрагменты расшифровки' },
+        emits: {
+          en: 'Language-tagged spans',
+          zh: '带语种标记的片段',
+          ru: 'Фрагменты с меткой языка',
+        },
+        risk: {
+          en: 'Mid-sentence code-switching',
+          zh: '句中语码转换',
+          ru: 'Переключение языка внутри фразы',
+        },
       },
     },
     {
@@ -547,15 +753,28 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'ember',
-      label: { en: 'Hospital records', zh: '医院信息库' },
-      sub: { en: 'table + updated date', zh: '来源表 + 更新日期' },
+      label: { en: 'Hospital records', zh: '医院信息库', ru: 'База данных больницы' },
+      sub: {
+        en: 'table + updated date',
+        zh: '来源表 + 更新日期',
+        ru: 'таблица-источник + дата',
+      },
       detail: {
         body: {
           en: 'Departments, locations, opening hours, registration procedures — each field keeping its source table and last-updated date, so "cardiology is in building 3" always resolves to which record said so and when. A department that moved last month is the most dangerous kind of confident error.',
           zh: '科室、位置、开放时间、挂号流程——每个字段保留来源表与最后更新日期，因此"心内科在 3 号楼"总能追溯到是哪条记录、在何时这样说的。一个上个月刚搬走的科室，是最危险的那种自信错误。',
+          ru: 'Отделения, расположение, часы приёма, порядок записи — у каждого поля сохраняется таблица-источник и дата последнего обновления, поэтому «кардиология в корпусе 3» всегда сводится к тому, какая запись это утверждает и когда. Отделение, переехавшее в прошлом месяце, — самый опасный вид уверенной ошибки.',
         },
-        emits: { en: 'Field spans + provenance', zh: '字段片段 + 来源信息' },
-        risk: { en: 'Confidently stale information', zh: '自信地给出过期信息' },
+        emits: {
+          en: 'Field spans + provenance',
+          zh: '字段片段 + 来源信息',
+          ru: 'Поля + происхождение',
+        },
+        risk: {
+          en: 'Confidently stale information',
+          zh: '自信地给出过期信息',
+          ru: 'Уверенно выданные устаревшие данные',
+        },
       },
     },
     {
@@ -565,16 +784,25 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'signal',
-      label: { en: 'Evidence spans', zh: '证据片段' },
-      sub: { en: 'typed + timestamped', zh: '带类型 + 带时间戳' },
+      label: { en: 'Evidence spans', zh: '证据片段', ru: 'Фрагменты-свидетельства' },
+      sub: {
+        en: 'typed + timestamped',
+        zh: '带类型 + 带时间戳',
+        ru: 'с типом и отметкой времени',
+      },
       detail: {
         body: {
           en: 'The architectural commitment: modalities are normalised into typed, timestamped spans and never fused in embedding space. That costs representational power — a jointly trained encoder would score better — but once a claim is a vector you cannot say which second of audio produced it.',
           zh: '架构上的核心承诺：各模态被归一化为带类型、带时间戳的片段，绝不在嵌入空间融合。这牺牲了表示能力——联合训练的编码器分数会更高——但一旦一条陈述变成向量，你就无法说出它来自音频的第几秒。',
+          ru: 'Главное архитектурное обязательство: модальности приводятся к типизированным фрагментам с отметками времени и никогда не сливаются в пространстве эмбеддингов. Это стоит выразительной силы — совместно обученный энкодер набрал бы больше, — но как только утверждение стало вектором, уже не скажешь, из какой секунды звука оно взялось.',
         },
-        takes: { en: 'All three modalities', zh: '三路模态' },
-        emits: { en: 'Unified span pool', zh: '统一片段池' },
-        risk: { en: 'Provenance lost at fusion', zh: '融合时丢失来源信息' },
+        takes: { en: 'All three modalities', zh: '三路模态', ru: 'Все три модальности' },
+        emits: { en: 'Unified span pool', zh: '统一片段池', ru: 'Общий пул фрагментов' },
+        risk: {
+          en: 'Provenance lost at fusion',
+          zh: '融合时丢失来源信息',
+          ru: 'Происхождение теряется при слиянии',
+        },
       },
     },
     {
@@ -584,15 +812,20 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'flux',
-      label: { en: 'Hybrid retrieval', zh: '混合检索' },
-      sub: { en: 'BM25 + dense', zh: 'BM25 + 稠密' },
+      label: { en: 'Hybrid retrieval', zh: '混合检索', ru: 'Гибридный поиск' },
+      sub: { en: 'BM25 + dense', zh: 'BM25 + 稠密', ru: 'BM25 + плотный' },
       detail: {
         body: {
           en: 'Lexical plus dense, because hospital queries hinge on exact identifiers — department names, building numbers, form codes — that embeddings blur and BM25 nails. Dense-only retrieval failed specifically on the queries that mattered most.',
           zh: '词法与稠密并用，因为医院场景的查询依赖精确标识——科室名、楼栋编号、单据代码——嵌入会把它们模糊掉，而 BM25 能精确命中。纯稠密检索恰恰在最重要的那些查询上失效。',
+          ru: 'Лексический плюс плотный, потому что больничные запросы держатся на точных идентификаторах — названиях отделений, номерах корпусов, кодах форм, — которые эмбеддинги размывают, а BM25 берёт точно. Только плотный поиск проваливался именно на самых важных запросах.',
         },
-        takes: { en: 'Span pool + query', zh: '片段池 + 查询' },
-        emits: { en: 'Ranked evidence set', zh: '排序后的证据集' },
+        takes: { en: 'Span pool + query', zh: '片段池 + 查询', ru: 'Пул фрагментов + запрос' },
+        emits: {
+          en: 'Ranked evidence set',
+          zh: '排序后的证据集',
+          ru: 'Отранжированный набор свидетельств',
+        },
       },
     },
     {
@@ -602,15 +835,20 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'signal',
-      label: { en: 'Constrained generator', zh: '受约束生成器' },
-      sub: { en: 'self-hosted', zh: '自建部署' },
+      label: { en: 'Constrained generator', zh: '受约束生成器', ru: 'Генератор с ограничениями' },
+      sub: { en: 'self-hosted', zh: '自建部署', ru: 'на своих серверах' },
       detail: {
         body: {
           en: 'Self-hosted, because intake answers are patient data and cannot leave the deployment boundary — and as a side effect, evaluation has no per-token cost. Output is emitted directly into the answer schema rather than as prose to be parsed afterwards.',
           zh: '自建部署，因为预问诊的回答属于患者数据、不能离开部署边界——副作用是评测没有按 token 的费用。输出直接生成为 answer 模式，而不是先产出散文再解析。',
+          ru: 'На своих серверах, потому что ответы предварительного приёма — это данные пациента и они не могут покидать контур развёртывания; побочный эффект — оценка не стоит ничего за токен. Вывод сразу порождается в схеме ответа, а не как проза, которую потом надо разбирать.',
         },
-        takes: { en: 'Ranked evidence', zh: '排序后的证据' },
-        emits: { en: 'Answers with span refs', zh: '带片段引用的回答' },
+        takes: { en: 'Ranked evidence', zh: '排序后的证据', ru: 'Отранжированные свидетельства' },
+        emits: {
+          en: 'Answers with span refs',
+          zh: '带片段引用的回答',
+          ru: 'Ответы со ссылками на фрагменты',
+        },
       },
     },
     {
@@ -620,16 +858,25 @@ const clinicalFusion: DiagramSpec = {
       w: 180,
       h: 86,
       accent: 'ember',
-      label: { en: 'Schema validator', zh: '模式校验器' },
-      sub: { en: 'escalation gate', zh: '转人工闸门' },
+      label: { en: 'Schema validator', zh: '模式校验器', ru: 'Валидатор схемы' },
+      sub: { en: 'escalation gate', zh: '转人工闸门', ru: 'шлюз передачи человеку' },
       detail: {
         body: {
           en: 'An answer with an empty evidence list is not representable, so "forgot to cite" cannot reach the patient — and the intent enum has no diagnosis member, so a diagnostic answer has nowhere to live. A refusal with no escalation also fails validation: no answer and no hand-off is a patient left standing there.',
           zh: '证据列表为空的回答无法被表示，因此"忘记引用"根本到不了患者面前——而 intent 枚举中没有"诊断"这一项，诊断性回答也就无处容身。没有附带转人工的拒答同样无法通过校验：既不回答也不交接，等于把患者晾在原地。',
+          ru: 'Ответ с пустым списком свидетельств невыразим, поэтому «забыл сослаться» просто не доходит до пациента, — а в перечислении интентов нет диагноза, так что диагностическому ответу негде существовать. Отказ без передачи человеку тоже не проходит валидацию: ни ответа, ни передачи — это пациент, оставленный стоять на месте.',
         },
-        takes: { en: 'Turn object', zh: '轮次对象' },
-        emits: { en: 'Answer + escalation queue', zh: '回答 + 转人工队列' },
-        risk: { en: 'Over-refusal: safe and useless', zh: '过度拒答：安全但无用' },
+        takes: { en: 'Turn object', zh: '轮次对象', ru: 'Объект хода' },
+        emits: {
+          en: 'Answer + escalation queue',
+          zh: '回答 + 转人工队列',
+          ru: 'Ответ + очередь к человеку',
+        },
+        risk: {
+          en: 'Over-refusal: safe and useless',
+          zh: '过度拒答：安全但无用',
+          ru: 'Чрезмерные отказы: безопасно и бесполезно',
+        },
       },
     },
   ],
@@ -645,7 +892,11 @@ const clinicalFusion: DiagramSpec = {
       to: 'spans',
       kind: 'feedback',
       dashed: true,
-      label: { en: 'gaps re-queried, not guessed', zh: '缺口重新检索，而非猜测' },
+      label: {
+        en: 'gaps re-queried, not guessed',
+        zh: '缺口重新检索，而非猜测',
+        ru: 'пробелы перезапрашиваются, а не угадываются',
+      },
     },
   ],
 };
@@ -662,15 +913,24 @@ const fieldPipeline: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'signal',
-      label: { en: 'Stereo capture', zh: '双目采集' },
-      sub: { en: '~350 MB/s', zh: '约 350 MB/s' },
+      label: { en: 'Stereo capture', zh: '双目采集', ru: 'Стереосъёмка' },
+      sub: { en: '~350 MB/s', zh: '约 350 MB/s', ru: '≈350 МБ/с' },
       detail: {
         body: {
           en: 'A 2 MP stereo pair at 30 fps is roughly 350 MB/s. Passive stereo rather than an active IR depth camera: projected-pattern sensors degrade badly in direct sunlight, which is exactly the condition this robot works in.',
           zh: '200 万像素双目、30 fps，约等于 350 MB/s。选被动双目而非主动红外深度相机：结构光类传感器在直射阳光下严重退化，而这正是这台机器人的工作条件。',
+          ru: 'Стереопара 2 Мп на 30 к/с — это примерно 350 МБ/с. Пассивное стерео, а не активная ИК-камера глубины: сенсоры с проецируемым узором сильно деградируют под прямым солнцем, а именно в таких условиях этот робот и работает.',
         },
-        emits: { en: 'Shared-memory frame handle', zh: '共享内存帧句柄' },
-        risk: { en: 'Exposure clipping in dappled shade', zh: '斑驳阴影下曝光截断' },
+        emits: {
+          en: 'Shared-memory frame handle',
+          zh: '共享内存帧句柄',
+          ru: 'Дескриптор кадра в разделяемой памяти',
+        },
+        risk: {
+          en: 'Exposure clipping in dappled shade',
+          zh: '斑驳阴影下曝光截断',
+          ru: 'Срез экспозиции в пятнистой тени',
+        },
       },
     },
     {
@@ -680,16 +940,25 @@ const fieldPipeline: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'signal',
-      label: { en: 'Perception', zh: '感知' },
-      sub: { en: 'zero-copy in', zh: '零拷贝输入' },
+      label: { en: 'Perception', zh: '感知', ru: 'Восприятие' },
+      sub: { en: 'zero-copy in', zh: '零拷贝输入', ru: 'вход без копирования' },
       detail: {
         body: {
           en: 'Reads the frame in place over iceoryx2 — no memcpy per hop, no allocator pressure. Serialising image-rate traffic through a conventional bus showed up as jitter in a loop that must not jitter.',
           zh: '通过 iceoryx2 就地读取帧——没有每跳的 memcpy，没有分配器压力。把图像速率的数据走常规总线序列化，会在一个不允许抖动的环路里表现为抖动。',
+          ru: 'Читает кадр на месте через iceoryx2 — без memcpy на каждом переходе и без давления на аллокатор. Прогон трафика с частотой кадров через обычную шину с сериализацией проявлялся как дрожание в контуре, которому дрожать нельзя.',
         },
-        takes: { en: 'Frame handle', zh: '帧句柄' },
-        emits: { en: 'Cluster + berry detections', zh: '果串与果粒检测' },
-        risk: { en: 'CUDA fault must not reach control', zh: 'CUDA 异常不得传到控制' },
+        takes: { en: 'Frame handle', zh: '帧句柄', ru: 'Дескриптор кадра' },
+        emits: {
+          en: 'Cluster + berry detections',
+          zh: '果串与果粒检测',
+          ru: 'Детекции гроздей и ягод',
+        },
+        risk: {
+          en: 'CUDA fault must not reach control',
+          zh: 'CUDA 异常不得传到控制',
+          ru: 'Сбой CUDA не должен дойти до управления',
+        },
       },
     },
     {
@@ -699,16 +968,25 @@ const fieldPipeline: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'flux',
-      label: { en: 'Decision engine', zh: '决策引擎' },
-      sub: { en: '< 120 ms budget', zh: '< 120 ms 预算' },
+      label: { en: 'Decision engine', zh: '决策引擎', ru: 'Решающий модуль' },
+      sub: { en: '< 120 ms budget', zh: '< 120 ms 预算', ru: 'бюджет < 120 мс' },
       detail: {
         body: {
           en: 'Scores which berries to remove. Every threshold is tuned around an asymmetry: a missed berry costs nothing, cutting the peduncle destroys the whole cluster. The robot is deliberately and measurably timid.',
           zh: '评分决定摘除哪些果粒。每个阈值都围绕一种不对称来调：漏剪一粒没有代价，剪断果梗毁掉整串。这台机器人是刻意的、可量化的保守。',
+          ru: 'Оценивает, какие ягоды удалять. Каждый порог настроен вокруг асимметрии: пропущенная ягода не стоит ничего, перерезанная плодоножка уничтожает всю гроздь. Робот намеренно и измеримо осторожен.',
         },
-        takes: { en: 'Detections + arm state', zh: '检测结果 + 机械臂状态' },
-        emits: { en: 'Scored target list', zh: '带评分的目标列表' },
-        risk: { en: 'Target older than 120 ms', zh: '目标超过 120 ms 未更新' },
+        takes: {
+          en: 'Detections + arm state',
+          zh: '检测结果 + 机械臂状态',
+          ru: 'Детекции + состояние манипулятора',
+        },
+        emits: { en: 'Scored target list', zh: '带评分的目标列表', ru: 'Список целей с оценками' },
+        risk: {
+          en: 'Target older than 120 ms',
+          zh: '目标超过 120 ms 未更新',
+          ru: 'Цель не обновлялась дольше 120 мс',
+        },
       },
     },
     {
@@ -718,15 +996,20 @@ const fieldPipeline: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'flux',
-      label: { en: 'Motion planner', zh: '运动规划' },
-      sub: { en: 'classical, verified', zh: '经典方法，可验证' },
+      label: { en: 'Motion planner', zh: '运动规划', ru: 'Планировщик движения' },
+      sub: { en: 'classical, verified', zh: '经典方法，可验证', ru: 'классический, проверяемый' },
       detail: {
         body: {
           en: 'Plans around trellis wire, canes and the peduncle. Validated per-commit against a simulated collision suite, which caught two regressions that would otherwise have been discovered as a bent gripper.',
           zh: '围绕棚架钢丝、枝条与果梗做规划。每次提交都对照仿真碰撞测试集验证，这抓到了两次回归——否则它们会以"夹爪被撞弯"的形式被发现。',
+          ru: 'Планирует обход шпалерной проволоки, лоз и плодоножки. Проверяется на каждый коммит против набора смоделированных столкновений — это поймало две регрессии, которые иначе обнаружились бы в виде погнутого захвата.',
         },
-        takes: { en: 'Target + obstacle set', zh: '目标 + 障碍集合' },
-        emits: { en: 'Joint trajectory', zh: '关节轨迹' },
+        takes: {
+          en: 'Target + obstacle set',
+          zh: '目标 + 障碍集合',
+          ru: 'Цель + набор препятствий',
+        },
+        emits: { en: 'Joint trajectory', zh: '关节轨迹', ru: 'Траектория в суставах' },
       },
     },
     {
@@ -736,16 +1019,21 @@ const fieldPipeline: DiagramSpec = {
       w: 190,
       h: 92,
       accent: 'ember',
-      label: { en: 'Arm control', zh: '机械臂控制' },
-      sub: { en: '125 Hz, own loop', zh: '125 Hz，独立环路' },
+      label: { en: 'Arm control', zh: '机械臂控制', ru: 'Управление манипулятором' },
+      sub: { en: '125 Hz, own loop', zh: '125 Hz，独立环路', ru: '125 Гц, свой контур' },
       detail: {
         body: {
           en: "Runs its own fixed loop against the controller's 8 ms feedback channel and holds a safe pose whenever upstream input goes stale. The staleness check lives here, not in the publisher — a publisher that has crashed cannot tell you it has crashed.",
           zh: '针对控制柜 8 ms 反馈通道跑自己的固定环路，上游输入一旦过期就保持安全位姿。过期判定写在这里而不是发布端——已经崩掉的发布端没法告诉你它崩了。',
+          ru: 'Крутит свой фиксированный контур против канала обратной связи контроллера на 8 мс и удерживает безопасную позу, как только вход сверху устаревает. Проверка устаревания живёт здесь, а не у публикующей стороны: упавший публикатор не может сообщить вам, что он упал.',
         },
-        takes: { en: 'Trajectory (or nothing)', zh: '轨迹（或没有）' },
-        emits: { en: 'Servo commands', zh: '伺服指令' },
-        risk: { en: 'Extrapolating into a perception gap', zh: '向感知空窗外推' },
+        takes: { en: 'Trajectory (or nothing)', zh: '轨迹（或没有）', ru: 'Траектория (или ничего)' },
+        emits: { en: 'Servo commands', zh: '伺服指令', ru: 'Команды на приводы' },
+        risk: {
+          en: 'Extrapolating into a perception gap',
+          zh: '向感知空窗外推',
+          ru: 'Экстраполяция в окно без восприятия',
+        },
       },
     },
   ],
@@ -758,7 +1046,11 @@ const fieldPipeline: DiagramSpec = {
       from: 'control',
       to: 'perception',
       kind: 'feedback',
-      label: { en: 'arm state @ 125 Hz', zh: '机械臂状态 @ 125 Hz' },
+      label: {
+        en: 'arm state @ 125 Hz',
+        zh: '机械臂状态 @ 125 Hz',
+        ru: 'состояние манипулятора @ 125 Гц',
+      },
     },
   ],
 };
