@@ -1,6 +1,29 @@
-# Cloudflare Pages response headers.
+# Cloudflare response headers.
+#
+# ---------------------------------------------------------------------------
+# CACHING — rule order matters
+# ---------------------------------------------------------------------------
+# Cloudflare applies every matching rule in order, and for a repeated header
+# the last match wins. So the default below is "do not cache", and only the
+# hash-named build assets opt back into long caching.
+#
+# This replaces an earlier version that put the no-cache rule on `/index.html`
+# alone. That rule almost never matched: this is a client-routed SPA, so the
+# document is requested as `/`, `/projects`, `/projects/vla-lab` — never as
+# `/index.html`. Those paths therefore fell through to the default policy and
+# the shell could be cached by the browser.
+#
+# The failure that causes is specific and looks like a code bug: a visitor
+# holds a stale document referencing `/assets/index-OLD.js`, the next deploy
+# removes that file, the script 404s, React never mounts, and the page is
+# blank white with no text and nothing in the console that points at the real
+# cause. Clearing the browser cache "fixes" it, which is how it was found.
+#
+# Every HTML response must revalidate. The hashed assets are safe to cache
+# forever precisely because their names change when their contents do.
 
 /*
+  Cache-Control: public, max-age=0, must-revalidate
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
@@ -11,10 +34,24 @@
   # and the JSON-LD block in index.html.
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
 
-# Hashed build assets are immutable.
+# Content-hashed build output: the name changes whenever the bytes do, so a
+# stale copy can never be the wrong copy.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Never cache the shell: it is the routing entry point.
-/index.html
-  Cache-Control: public, max-age=0, must-revalidate
+# Images and media are content-addressed by filename rather than by hash, so
+# they get a day rather than a year — long enough to help, short enough that
+# replacing a figure is visible the next day without a cache purge.
+/assets/real/*
+  Cache-Control: public, max-age=86400
+
+/og.png
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/cursor-hand.svg
+  Cache-Control: public, max-age=86400
+/cursor-hand-active.svg
+  Cache-Control: public, max-age=86400

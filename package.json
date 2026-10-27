@@ -12,6 +12,8 @@
     "check:classes": "node scripts/check-classes.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
+    "check:render": "node scripts/check-render.mjs",
+    "check:keys": "node scripts/check-ui-keys.mjs",
     "check": "npm run check:assets && npm run typecheck && npm run check:contrast && npm run build && npm run check:classes",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"scripts/*.mjs\" \"*.{json,ts,html}\"",
     "og": "node scripts/make-og.mjs"
