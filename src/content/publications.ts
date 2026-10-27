@@ -39,6 +39,30 @@ const asPublished = (title: string): L => ({ en: title, zh: title, ru: title });
 export const publications: Publication[] = [
   {
     title: asPublished(
+      'High-Fidelity RVE Modeling of Woven Textile Composites from U-Net-Segmented Micro-CT Imagery via Dual Kriging',
+    ),
+    // TODO(content): fill in the conference name and the second author.
+    // Supplied as "an IEEE conference, 2026, Shen Xin third author"; a web
+    // search found no index entry, which is expected for a 2026 paper that
+    // may not have been presented yet. Left incomplete on purpose rather
+    // than guessing — a wrong venue on a citation is worse than a missing
+    // one, and this is the field a reviewer checks first.
+    venue: {
+      en: 'IEEE conference — details pending',
+      zh: 'IEEE 会议 — 详情待补',
+      ru: 'Конференция IEEE — детали уточняются',
+    },
+    year: 2026,
+    authors: 'Feng Hongyang, …, Shen Xin',
+    kind: 'paper',
+    abstract: {
+      en: 'A pipeline from micro-CT imagery to a simulation-ready representative volume element of a woven textile composite: U-Net segmentation separates the fibre tows from the reconstructed volume, and dual kriging fits smooth tow geometry through the segmented data, producing an RVE that follows the real weave rather than an idealised one.',
+      zh: '一条从 micro-CT 影像到可直接用于仿真的编织复合材料代表性体积单元（RVE）的流程：U-Net 分割把纤维束从重建体数据中分离出来，再以双重克里金在分割结果上拟合光滑的纤维束几何，得到的 RVE 贴合真实织构，而非理想化织构。',
+      ru: 'Конвейер от микро-КТ к готовому для расчёта представительному объёмному элементу тканого композита: сегментация U-Net отделяет волоконные жгуты от реконструированного объёма, а двойной кригинг строит по сегментации гладкую геометрию жгутов, давая RVE, который следует реальному переплетению, а не идеализированному.',
+    },
+  },
+  {
+    title: asPublished(
       'Application of Adaptively Maximum Correntropy Based Robust Kalman Filter in Integrated Navigation System',
     ),
     venue: {

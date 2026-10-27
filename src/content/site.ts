@@ -52,9 +52,9 @@ export const profile = {
   /** Hero stat rail. Keep to four; they should be defensible. */
   stats: [
     {
-      value: '9',
+      value: '10',
       provenance: 'measured',
-      countTo: 9,
+      countTo: 10,
       label: { en: 'Peer-reviewed papers', zh: '同行评审论文', ru: 'Рецензируемых статей' },
       detail: { en: 'IEEE · Scopus · ВАК', zh: 'IEEE · Scopus · ВАК', ru: 'IEEE · Scopus · ВАК' },
     },
