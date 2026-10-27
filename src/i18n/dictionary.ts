@@ -119,7 +119,7 @@ export const ui = {
   'writing.minutes': { en: 'min read', zh: '分钟阅读', ru: 'мин чтения' },
   'writing.unpublished': { en: 'Unpublished', zh: '未发布', ru: 'Не опубликовано' },
 
-  'palace.eyebrow': { en: 'The Hall', zh: '厅', ru: 'Чертог' },
+  'palace.eyebrow': { en: 'Interactive', zh: '交互游戏', ru: 'Интерактив' },
   'palace.title': {
     en: "The Navigator's Hall",
     zh: '导航者之厅',

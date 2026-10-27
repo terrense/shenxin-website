@@ -2,19 +2,29 @@ import type { Project } from '../types';
 
 export const eyeInHandCalibration: Project = {
   slug: 'eye-in-hand-calibration',
-  title: { en: 'Stereo Eye-in-Hand Calibration Suite', zh: '双目 Eye-in-Hand 标定套件' },
+  title: {
+    en: 'Stereo Eye-in-Hand Calibration Suite',
+    zh: '双目 Eye-in-Hand 标定套件',
+    ru: 'Стереокалибровка «глаз в руке»',
+  },
   tagline: {
     en: 'A C++/Qt tool that makes hand-eye calibration repeatable by a non-expert',
     zh: '一个让非专家也能稳定复现手眼标定的 C++/Qt 工具',
+    ru: 'Инструмент на C++/Qt, позволяющий повторить калибровку без специалиста',
   },
   summary: {
     en: 'Hand-eye calibration is the step that silently determines whether every downstream motion is correct. This suite turns it from a notebook ritual into an auditable tool: automated pose capture driven by the arm controller, residuals surfaced per pose, and a protocol simulator so the whole flow can be tested without a robot.',
     zh: '手眼标定是那个默默决定下游所有运动是否正确的环节。这套工具把它从"notebook 仪式"变成一个可审计的工具：由控制柜驱动的自动采点、逐位姿暴露的残差，以及一个协议模拟器——让整条流程在没有真机时也能测试。',
+    ru: 'Калибровка «рука — глаз» — тот самый шаг, который незаметно решает, верны ли все последующие движения. Этот пакет превращает её из ритуала в ноутбуке в проверяемый инструмент: автоматический сбор поз под управлением контроллера манипулятора, невязки по каждой позе и симулятор протокола, позволяющий прогнать весь процесс без робота.',
   },
   domain: 'robotics',
   alsoIn: ['infra'],
   period: '2024 — 2025',
-  role: { en: 'Sole author — SDK, GUI and protocol layer', zh: '独立开发 — SDK、界面与协议层' },
+  role: {
+    en: 'Sole author — SDK, GUI and protocol layer',
+    zh: '独立开发 — SDK、界面与协议层',
+    ru: 'Единственный автор — SDK, интерфейс и протокольный слой',
+  },
   status: 'shipped',
   accent: 'flux',
   stack: [
@@ -30,23 +40,32 @@ export const eyeInHandCalibration: Project = {
     {
       value: '8ms',
       provenance: 'spec',
-      label: { en: 'Controller state rate', zh: '控制柜状态周期' },
-      detail: { en: 'Port 30004 real-time feedback', zh: '30004 端口实时反馈' },
+      label: {
+        en: 'Controller state rate',
+        zh: '控制柜状态周期',
+        ru: 'Период состояния контроллера',
+      },
+      detail: {
+        en: 'Port 30004 real-time feedback',
+        zh: '30004 端口实时反馈',
+        ru: 'Обратная связь в реальном времени, порт 30004',
+      },
     },
     {
       value: '20mm',
       provenance: 'spec',
-      label: { en: 'Checkerboard pitch', zh: '棋盘格边长' },
-      detail: { en: '11×8 inner corners', zh: '11×8 内角点' },
+      label: { en: 'Checkerboard pitch', zh: '棋盘格边长', ru: 'Шаг шахматной доски' },
+      detail: { en: '11×8 inner corners', zh: '11×8 内角点', ru: '11×8 внутренних углов' },
     },
     {
       value: '5',
       provenance: 'spec',
       countTo: 5,
-      label: { en: 'Guided stages', zh: '引导式阶段' },
+      label: { en: 'Guided stages', zh: '引导式阶段', ru: 'Шагов с подсказками' },
       detail: {
         en: 'Capture → stereo → auto-pose → hand-eye → audit',
         zh: '采集 → 双目 → 自动采点 → 手眼 → 审计',
+        ru: 'Съёмка → стерео → автопозы → рука-глаз → аудит',
       },
     },
   ],

@@ -2,14 +2,20 @@ import type { Project } from '../types';
 
 export const clinicalMultimodalAgent: Project = {
   slug: 'clinical-multimodal-agent',
-  title: { en: 'Multilingual Hospital Assistance Agent', zh: '多语种医院导诊助手' },
+  title: {
+    en: 'Multilingual Hospital Assistance Agent',
+    zh: '多语种医院导诊助手',
+    ru: 'Многоязычный агент-навигатор по больнице',
+  },
   tagline: {
     en: 'Speech, retrieval, and a hard rule against diagnosing',
     zh: '语音、检索，以及一条绝不诊断的硬规则',
+    ru: 'Речь, поиск и жёсткий запрет на постановку диагноза',
   },
   summary: {
     en: 'A multilingual medical-assistance agent for hospital front-of-house: speech recognition tuned for medical vocabulary, retrieval-augmented answers grounded in the hospital’s own information, and safety-aware dialogue for guidance, pre-consultation intake and general enquiries. The engineering centre of gravity is not accuracy — it is knowing reliably when to stop and route to a human.',
     zh: '面向医院前端场景的多语种医疗辅助 Agent：针对医学词汇优化的语音识别、以医院自有信息为依据的检索增强回答，以及用于导诊、预问诊与常规咨询的安全导向对话。工程重心不在准确率——而在可靠地知道何时该停下并转交人工。',
+    ru: 'Многоязычный медицинский агент для зоны регистратуры: распознавание речи, настроенное на медицинскую лексику, ответы с опорой на поиск по собственным данным больницы и диалог с учётом безопасности для навигации, предварительного опроса и общих справок. Центр тяжести этой работы не в точности, а в умении надёжно понять, когда нужно остановиться и передать человеку.',
   },
   domain: 'healthcare',
   alsoIn: ['agentic', 'infra'],
@@ -17,6 +23,7 @@ export const clinicalMultimodalAgent: Project = {
   role: {
     en: 'Engineering lead — speech, retrieval & safety layer',
     zh: '工程负责人 — 语音、检索与安全层',
+    ru: 'Руководитель разработки — речь, поиск и слой безопасности',
   },
   status: 'research',
   accent: 'ember',
@@ -33,26 +40,32 @@ export const clinicalMultimodalAgent: Project = {
     {
       value: '100%',
       provenance: 'spec',
-      label: { en: 'Claims with citations', zh: '带引用的陈述' },
+      label: { en: 'Claims with citations', zh: '带引用的陈述', ru: 'Утверждений со ссылкой' },
       detail: {
         en: 'Uncited sentences are blocked, not flagged',
         zh: '无引用的句子直接拦截，而非仅标记',
+        ru: 'Фраза без ссылки блокируется, а не помечается',
       },
     },
     {
       value: '0',
       provenance: 'spec',
-      label: { en: 'Diagnoses offered', zh: '给出的诊断数' },
+      label: { en: 'Diagnoses offered', zh: '给出的诊断数', ru: 'Поставленных диагнозов' },
       detail: {
         en: 'Structurally impossible, not discouraged',
         zh: '结构上不可能，而非仅被劝阻',
+        ru: 'Невозможно структурно, а не просто не рекомендуется',
       },
     },
     {
       value: 'local',
       provenance: 'spec',
-      label: { en: 'Inference boundary', zh: '推理边界' },
-      detail: { en: 'No PHI leaves the deployment', zh: '患者数据不离开部署环境' },
+      label: { en: 'Inference boundary', zh: '推理边界', ru: 'Контур инференса' },
+      detail: {
+        en: 'No PHI leaves the deployment',
+        zh: '患者数据不离开部署环境',
+        ru: 'Данные пациентов не покидают контур',
+      },
     },
   ],
   featured: true,

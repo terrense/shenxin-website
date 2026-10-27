@@ -2,19 +2,25 @@ import type { Project } from '../types';
 
 export const lilbot: Project = {
   slug: 'lilbot',
-  title: { en: 'Lilbot — A Small Agent Runtime', zh: 'Lilbot — 一个小而完整的 Agent 运行时' },
+  title: {
+    en: 'Lilbot — A Small Agent Runtime',
+    zh: 'Lilbot — 一个小而完整的 Agent 运行时',
+    ru: 'Lilbot — небольшая среда выполнения агента',
+  },
   tagline: {
     en: 'Tool-calling, durable memory and replayable traces in a local-first loop',
     zh: '工具调用、持久记忆与可回放轨迹，构成一个本地优先的闭环',
+    ru: 'Вызов инструментов, стойкая память и воспроизводимые трассы в локальном цикле',
   },
   summary: {
     en: 'An agent runtime built to be debuggable. Every turn is a durable, replayable trace; memory is explicit files on disk rather than an opaque vector blob; and tools are contracts validated at both ends. Small enough to read in an afternoon, which is the point.',
     zh: '一个为"可调试"而生的 Agent 运行时。每一轮都是可持久化、可回放的轨迹；记忆是磁盘上的显式文件，而不是不透明的向量团；工具是两端都校验的契约。小到可以用一个下午读完——这正是设计目标。',
+    ru: 'Среда выполнения агента, построенная ради отлаживаемости. Каждый ход — стойкая воспроизводимая трасса; память это явные файлы на диске, а не непрозрачный ком векторов; инструменты — контракты, проверяемые с обеих сторон. Достаточно маленькая, чтобы прочитать за вечер, и в этом вся суть.',
   },
   domain: 'agentic',
   alsoIn: ['infra'],
   period: '2025 — now',
-  role: { en: 'Sole author', zh: '独立开发' },
+  role: { en: 'Sole author', zh: '独立开发', ru: 'Единственный автор' },
   status: 'active',
   accent: 'flux',
   stack: ['Python', 'MCP', 'Pydantic', 'SQLite', 'vLLM / Ollama', 'OpenTelemetry', 'pytest'],
@@ -22,21 +28,33 @@ export const lilbot: Project = {
     {
       value: '100%',
       provenance: 'spec',
-      label: { en: 'Turns replayable', zh: '可回放轮次' },
-      detail: { en: 'Deterministic from a recorded trace', zh: '由记录的轨迹确定性重放' },
+      label: { en: 'Turns replayable', zh: '可回放轮次', ru: 'Ходов воспроизводимо' },
+      detail: {
+        en: 'Deterministic from a recorded trace',
+        zh: '由记录的轨迹确定性重放',
+        ru: 'Детерминированно из записанной трассы',
+      },
     },
     {
       value: '0',
       provenance: 'spec',
-      label: { en: 'Hidden state', zh: '隐藏状态' },
-      detail: { en: 'Memory is readable files on disk', zh: '记忆是磁盘上可读的文件' },
+      label: { en: 'Hidden state', zh: '隐藏状态', ru: 'Скрытого состояния' },
+      detail: {
+        en: 'Memory is readable files on disk',
+        zh: '记忆是磁盘上可读的文件',
+        ru: 'Память — читаемые файлы на диске',
+      },
     },
     {
       value: '2',
       provenance: 'spec',
       countTo: 2,
-      label: { en: 'Validation points per tool', zh: '每个工具的校验点' },
-      detail: { en: 'Schema in, schema out', zh: '入参校验，出参校验' },
+      label: {
+        en: 'Validation points per tool',
+        zh: '每个工具的校验点',
+        ru: 'Точек проверки на инструмент',
+      },
+      detail: { en: 'Schema in, schema out', zh: '入参校验，出参校验', ru: 'Схема на входе и на выходе' },
     },
   ],
   featured: true,
