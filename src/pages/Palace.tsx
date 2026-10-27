@@ -10,8 +10,8 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { ArrowUpRight, Close } from '@/components/primitives/Icons';
 import { cn } from '@/lib/utils';
 
-const PalaceScene = lazy(() =>
-  import('@/components/sections/PalaceScene').then((m) => ({ default: m.PalaceScene })),
+const HallScene = lazy(() =>
+  import('@/components/sections/HallScene').then((m) => ({ default: m.HallScene })),
 );
 
 /**
@@ -44,22 +44,27 @@ export default function Palace() {
   });
 
   return (
-    <div className="section-y">
-      <div className="shell">
-        <SectionHeader
-          eyebrow={ui('palace.eyebrow')}
-          title={ui('palace.title')}
-          lede={ui('palace.lede')}
-        />
+    <div>
+      {/*
+        The scene breaks out of the content column and takes the whole
+        viewport. A game scene letterboxed inside a text column reads as a
+        figure in an article — which is exactly what the previous version
+        was, and exactly the note it got. Everything below it is still a
+        normal page, so scrolling leaves the game rather than trapping you.
+      */}
+      <Suspense
+        fallback={<div className="h-[100svh] w-full animate-pulse bg-surface-2" aria-hidden />}
+      >
+        <HallScene onOpen={setOpen} paused={Boolean(open)} />
+      </Suspense>
 
+      <div className="shell section-y">
         <Reveal>
-          <Suspense
-            fallback={
-              <div className="aspect-[26/16] w-full animate-pulse rounded-2xl bg-surface-2" />
-            }
-          >
-            <PalaceScene open={open} onOpen={setOpen} />
-          </Suspense>
+          <SectionHeader
+            eyebrow={ui('palace.eyebrow')}
+            title={ui('palace.title')}
+            lede={ui('palace.lede')}
+          />
         </Reveal>
 
         {/*

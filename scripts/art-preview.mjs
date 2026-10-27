@@ -58,9 +58,9 @@ const name = flag('name') ?? mode;
 const p = (f) => join(root, f).replace(/\\/g, '/');
 const entry = `
 import { paintGround, lightSources, PAL } from '${p('src/game/paint.ts')}';
-import { paintProps, paintHero, paintDecor } from '${p('src/game/props.ts')}';
+import { paintProp, paintHero, entities } from '${p('src/game/props.ts')}';
 import { MAP_W, MAP_H, TILE, placed, START } from '${p('src/game/world.ts')}';
-window.ART = { paintGround, paintProps, paintHero, paintDecor, lightSources, PAL, MAP_W, MAP_H, TILE, placed, START };
+window.ART = { paintGround, paintProp, paintHero, entities, lightSources, PAL, MAP_W, MAP_H, TILE, placed, START };
 `;
 
 const dir = mkdtempSync(join(tmpdir(), 'art-'));
@@ -101,9 +101,14 @@ function drawHall() {
   full.height = A.MAP_H * A.TILE;
   const fg = full.getContext('2d');
   A.paintGround(fg);
-  if (A.paintDecor) A.paintDecor(fg);
-  if (A.paintProps) A.paintProps(fg);
-  if (A.paintHero) A.paintHero(fg, A.START.x * A.TILE + A.TILE / 2, A.START.y * A.TILE + A.TILE, 'down', 0);
+  // Same depth sort the live scene uses, with the figure dropped in at its
+  // start tile so the preview shows what the player actually sees.
+  const heroY = A.START.y + 0.7;
+  const sorted = [...A.entities].sort((a, b) => a.y - b.y);
+  let i = 0;
+  while (i < sorted.length && sorted[i].y + 0.5 < heroY) sorted[i++].draw(fg);
+  A.paintHero(fg, (A.START.x + 0.5) * A.TILE, heroY * A.TILE, 'down', 0);
+  while (i < sorted.length) sorted[i++].draw(fg);
 
   // Light, the same way the live scene composites it.
   if (A.lightSources) {
@@ -133,7 +138,6 @@ function drawHall() {
 }
 
 function drawProps() {
-  if (!A.paintProps) { c.width = 400; c.height = 60; g.fillStyle='#fff'; g.font='16px sans-serif'; g.fillText('paintProps not implemented yet', 10, 34); return; }
   const kinds = A.placed.map(e => e.kind);
   const cols = 5, cell = 96, zoom = 3;
   const rows = Math.ceil(kinds.length / cols);
@@ -148,7 +152,7 @@ function drawProps() {
   kinds.forEach((kind, i) => {
     const cx = (i % cols) * cell + cell / 2;
     const cy = Math.floor(i / cols) * cell + cell - 20;
-    A.paintProps(fg, kind, cx, cy);
+    A.paintProp(fg, kind, cx, cy);
     fg.fillStyle = A.PAL.ink;
     fg.font = '9px monospace';
     fg.textAlign = 'center';

@@ -1,5 +1,5 @@
-import { PAL, circle, contact, ellipse, hash, line, rect as r, ring } from './paint';
-import { TILE, decor, placed, type DecorKind } from './world';
+import { PAL, circle, contact, ellipse, hash, line, paintPillar, rect as r, ring } from './paint';
+import { TILE, decor, pillars, placed, type DecorKind } from './world';
 
 /**
  * The exhibits, and the figure that walks among them.
@@ -191,6 +191,20 @@ function pointcloud(c: Ctx, cx: number, by: number) {
   const bot = by - 9;
   const hw = 14;
 
+  // A dark interior, which is the whole reason this prop works.
+  //
+  // The first version painted the points straight onto the cream floor
+  // showing through clear glass. Teal and brass dots on near-white have
+  // almost no contrast, so from two tiles away the exhibit was a faint
+  // smudge. A point cloud is a thing you look at in the dark; giving the
+  // case a night-coloured back wall costs one rectangle and makes every
+  // point in it legible.
+  const grad = c.createLinearGradient(0, top, 0, bot);
+  grad.addColorStop(0, '#13343a');
+  grad.addColorStop(1, '#0c2228');
+  c.fillStyle = grad;
+  c.fillRect(Math.round(cx - hw), Math.round(top + 4), hw * 2, bot - top - 4);
+
   // Vitrine: a glass box drawn as a lid ellipse plus two faces, with the
   // contents painted before the front face so they read as enclosed.
   const dots: [number, number, number][] = [];
@@ -216,8 +230,8 @@ function pointcloud(c: Ctx, cx: number, by: number) {
 
   // Glass.
   c.save();
-  c.globalAlpha = 0.22;
-  r(c, cx - hw, top + 4, hw * 2, bot - top - 4, PAL.skyLow);
+  c.globalAlpha = 0.18;
+  r(c, cx - hw, top + 4, hw * 2, bot - top - 4, PAL.cream);
   c.restore();
   c.save();
   c.globalAlpha = 0.5;
@@ -461,17 +475,21 @@ function bench(c: Ctx, cx: number, by: number) {
 }
 
 function brazier(c: Ctx, cx: number, by: number) {
-  contact(c, cx + 2, by - 2, 11, 4.5);
-  for (const dx of [-6, 0, 6]) line(c, cx + dx * 0.3, by - 16, cx + dx, by - 2, 2, PAL.brassDark);
-  ellipse(c, cx, by - 17, 9, 4, PAL.brassDark);
-  ellipse(c, cx, by - 18, 8, 3.4, PAL.brass);
-  ellipse(c, cx, by - 18.5, 6, 2.4, '#5b2f1c');
+  // Scaled up from the first pass, where a 9 px bowl on a 32 px tile read as
+  // a gold mushroom. Floor-standing light in a hall this size is chest-high
+  // furniture, not a candle.
+  contact(c, cx + 2, by - 2, 14, 5.5);
+  for (const dx of [-8, 0, 8]) line(c, cx + dx * 0.3, by - 22, cx + dx, by - 2, 2.5, PAL.brassDark);
+  line(c, cx - 7, by - 12, cx + 7, by - 12, 2, PAL.brass);
+  ellipse(c, cx, by - 23, 12, 5, PAL.brassDark);
+  ellipse(c, cx, by - 24.5, 11, 4.4, PAL.brass);
+  ellipse(c, cx, by - 25, 8.5, 3.2, '#5b2f1c');
   // Flame: three stacked ellipses, hot at the core. No animation — this is
   // baked into the static ground layer, and a flickering flame would mean
   // repainting the whole world every frame to move one pixel.
-  ellipse(c, cx, by - 22, 4.2, 5.5, '#d2541f');
-  ellipse(c, cx, by - 23, 2.8, 4, '#f0943a');
-  ellipse(c, cx, by - 23.5, 1.4, 2.4, PAL.brassLit);
+  ellipse(c, cx, by - 31, 5.6, 7.5, '#d2541f');
+  ellipse(c, cx, by - 32.5, 3.8, 5.4, '#f0943a');
+  ellipse(c, cx, by - 33.5, 1.9, 3.2, PAL.brassLit);
 }
 
 function crate(c: Ctx, cx: number, by: number) {
@@ -539,13 +557,36 @@ const DECOR: Record<DecorKind, (c: Ctx, cx: number, by: number) => void> = {
   bust,
 };
 
-/** Furniture is static, so it is baked into the ground layer with the walls. */
-export function paintDecor(c: Ctx) {
-  c.imageSmoothingEnabled = false;
-  for (const d of [...decor].sort((a, b) => a.y - b.y)) {
-    DECOR[d.kind](c, d.x * TILE + TILE / 2, d.y * TILE + TILE - 2);
-  }
-}
+/**
+ * Everything that takes part in the depth sort, as one list.
+ *
+ * Furniture, columns and exhibits were all baked into the static layer at
+ * first, which is faster and wrong: walk north of a table and the table is
+ * drawn behind you, so you appear to stand on it. Anything the player can
+ * get behind has to be sorted against the player every frame.
+ *
+ * Built once at module load. About ninety entries, culled to the viewport
+ * before sorting, so a frame sorts perhaps thirty — nothing.
+ */
+export type Entity = { x: number; y: number; draw: (c: Ctx) => void };
+
+export const entities: Entity[] = [
+  ...pillars.map((p) => ({
+    x: p.x,
+    y: p.y,
+    draw: (c: Ctx) => paintPillar(c, p.x * TILE, p.y * TILE),
+  })),
+  ...decor.map((d) => ({
+    x: d.x,
+    y: d.y,
+    draw: (c: Ctx) => DECOR[d.kind](c, d.x * TILE + TILE / 2, d.y * TILE + TILE - 2),
+  })),
+  ...placed.map((e) => ({
+    x: e.x,
+    y: e.y,
+    draw: (c: Ctx) => PROPS[e.kind](c, e.x * TILE + TILE / 2, e.y * TILE + TILE - 2),
+  })),
+];
 
 const PROPS: Record<Kind, (c: Ctx, cx: number, by: number) => void> = {
   astrolabe,
@@ -561,20 +602,13 @@ const PROPS: Record<Kind, (c: Ctx, cx: number, by: number) => void> = {
 };
 
 /**
- * Draws one prop at a given bottom-centre, or every placed exhibit when
- * called with no kind. The two-signature shape exists so the preview script
- * can lay the props out on a grid without duplicating the placement table.
+ * Draws one prop at a given bottom-centre. Used by the preview script to lay
+ * the exhibits out on a plain grid, away from the hall, which is how each
+ * one gets checked without hunting for it in the world.
  */
-export function paintProps(c: Ctx, kind?: Kind, cx?: number, by?: number) {
+export function paintProp(c: Ctx, kind: Kind, cx: number, by: number) {
   c.imageSmoothingEnabled = false;
-  if (kind && cx !== undefined && by !== undefined) {
-    PROPS[kind](c, cx, by);
-    return;
-  }
-  // Painter's order: south last, so a prop in front overlaps one behind.
-  for (const e of [...placed].sort((a, b) => a.y - b.y)) {
-    PROPS[e.kind](c, e.x * TILE + TILE / 2, e.y * TILE + TILE - 2);
-  }
+  PROPS[kind](c, cx, by);
 }
 
 export type Facing = 'down' | 'up' | 'left' | 'right';

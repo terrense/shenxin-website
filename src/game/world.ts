@@ -109,7 +109,15 @@ export const MEDALLIONS = [
   { cx: 45, cy: 31, r: 2 },
 ] as const;
 
-export const START = { x: 27, y: 36 };
+/**
+ * Two rows north of the south wall, not one.
+ *
+ * At row 36 the camera clamps against the bottom of the map and the figure
+ * sits half off the viewport edge on the opening frame — the first thing
+ * anyone sees, and it looks like a bug. Row 34 gives the clamp something to
+ * work with and opens on the nave running north toward the window.
+ */
+export const START = { x: 27, y: 34 };
 
 function build(): Grid {
   const g: Grid = new Uint8Array(MAP_W * MAP_H).fill(Cell.Wall);
@@ -202,7 +210,7 @@ export const walkable = (x: number, y: number): boolean => {
  * west and east paired so the GNSS pair and the robotics pair face each other.
  */
 const PLACEMENT: Record<string, { x: number; y: number }> = {
-  astrolabe: { x: 27, y: 33 },
+  astrolabe: { x: 27, y: 31 },
   window: { x: 27, y: 3 },
   terminal: { x: 24, y: 22 },
   caduceus: { x: 31, y: 22 },
@@ -236,29 +244,94 @@ function furnish(): Decor[] {
     if (walkable(x, y)) out.push({ x, y, kind });
   };
 
-  for (const room of [...ROOMS.west, ...ROOMS.east]) {
+  /**
+   * Six layouts, one per chamber.
+   *
+   * The first version ran one placement rule over every room, and the
+   * screenshot made the problem obvious immediately: the hall was
+   * mirror-symmetric down the nave and identical front to back, so it read
+   * as one room copy-pasted six times. Rooms in a real building differ
+   * because they are used for different things, and six hand-varied layouts
+   * is a dozen lines against a scene that otherwise looks generated.
+   *
+   * Offsets are relative to the chamber centre, with `s` flipping the
+   * long axis so west and east wings are not each other's reflection.
+   */
+  type Spot = [dx: number, dy: number, kind: DecorKind];
+  const LAYOUTS: Spot[][] = [
+    // Reading room: tables in a row, shelves already line the wall.
+    [
+      [-5, -1, 'table'],
+      [-5, 1, 'bench'],
+      [5, -1, 'table'],
+      [5, 1, 'bench'],
+      [-7, -4, 'brazier'],
+      [7, 4, 'brazier'],
+      [0, -4, 'bust'],
+    ],
+    // Store room: crates, one working table, light where the work is.
+    [
+      [-6, -3, 'crate'],
+      [-7, -1, 'crate'],
+      [-6, 2, 'crate'],
+      [5, 0, 'table'],
+      [5, 2, 'bench'],
+      [7, -4, 'brazier'],
+      [-7, 4, 'brazier'],
+    ],
+    // Orangery: planting down one side, a bench to sit at.
+    [
+      [-6, -3, 'plant'],
+      [-7, 0, 'plant'],
+      [-6, 3, 'plant'],
+      [6, 1, 'bench'],
+      [6, -1, 'table'],
+      [7, 4, 'brazier'],
+      [-7, -4, 'brazier'],
+      [0, 4, 'bust'],
+    ],
+    // Gallery: busts on both approaches, kept otherwise clear.
+    [
+      [-5, -3, 'bust'],
+      [-5, 3, 'bust'],
+      [5, -3, 'bust'],
+      [5, 3, 'bust'],
+      [-7, 0, 'brazier'],
+      [7, 0, 'brazier'],
+      [0, 4, 'bench'],
+    ],
+    // Workshop: two benches, crates, a plant by the door.
+    [
+      [-6, -2, 'table'],
+      [-6, 0, 'bench'],
+      [6, -2, 'table'],
+      [6, 0, 'bench'],
+      [-7, 3, 'crate'],
+      [7, 3, 'plant'],
+      [0, -4, 'brazier'],
+    ],
+    // Antechamber: sparse, so the last room before the entrance breathes.
+    [
+      [-6, 0, 'bench'],
+      [6, 0, 'bench'],
+      [-7, -4, 'plant'],
+      [7, -4, 'plant'],
+      [-7, 4, 'brazier'],
+      [7, 4, 'brazier'],
+    ],
+  ];
+
+  const rooms = [...ROOMS.west, ...ROOMS.east];
+  rooms.forEach((room, i) => {
     const cx = ((room.x0 + room.x1) / 2) | 0;
     const cy = ((room.y0 + room.y1) / 2) | 0;
-    const inner = room.x0 === 2 ? room.x1 : room.x0; // the side facing the nave
-
-    // Reading tables flanking the exhibit, north and south of it.
-    add(cx - 5, cy - 1, 'table');
-    add(cx - 5, cy + 1, 'bench');
-    add(cx + 5, cy - 1, 'table');
-    add(cx + 5, cy + 1, 'bench');
-
-    // Light at the corners.
-    add(room.x0 + 2, room.y0 + 2, 'brazier');
-    add(room.x1 - 2, room.y0 + 2, 'brazier');
-    add(room.x0 + 2, room.y1 - 2, 'brazier');
-    add(room.x1 - 2, room.y1 - 2, 'brazier');
-
-    // Clutter, kept away from the centre so the walk to the exhibit is clear.
-    add(inner === room.x1 ? room.x1 - 1 : room.x0 + 1, cy - 4, 'crate');
-    add(inner === room.x1 ? room.x1 - 2 : room.x0 + 2, cy - 4, 'crate');
-    add(inner === room.x1 ? room.x1 - 1 : room.x0 + 1, cy + 4, 'plant');
-    add(cx, room.y0 + 2, 'bust');
-  }
+    // West wings run the layouts forward, east wings run a different one and
+    // mirrored, so no two chambers on opposite sides of the nave match.
+    const west = room.x0 === 2;
+    const layout = LAYOUTS[(i * 2 + (west ? 0 : 1)) % LAYOUTS.length];
+    const s = west ? 1 : -1;
+    for (const [dx, dy, kind] of layout) add(cx + dx * s, cy + dy, kind);
+  });
 
   // The nave: braziers between the columns, and planting by the south door.
   for (const y of [11, 15, 27, 35]) {
@@ -274,6 +347,24 @@ function furnish(): Decor[] {
 }
 
 export const decor: Decor[] = furnish();
+
+/**
+ * The colonnade, as a list.
+ *
+ * Pillars are the one piece of architecture the player can walk behind, so
+ * unlike walls and shelving they cannot be baked into the static layer —
+ * they have to take part in the per-frame depth sort or the figure passes
+ * in front of a column it is standing behind.
+ */
+export const pillars: { x: number; y: number }[] = (() => {
+  const out: { x: number; y: number }[] = [];
+  for (let y = 0; y < MAP_H; y++) {
+    for (let x = 0; x < MAP_W; x++) {
+      if (cellAt(x, y) === Cell.Pillar) out.push({ x, y });
+    }
+  }
+  return out;
+})();
 
 export type PlacedExhibit = Exhibit & { x: number; y: number };
 

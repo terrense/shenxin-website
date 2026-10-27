@@ -1,4 +1,4 @@
-import { Cell, MAP_H, MAP_W, MEDALLIONS, RUG, TILE, cellAt } from './world';
+import { Cell, MAP_H, MAP_W, MEDALLIONS, RUG, TILE, cellAt, decor } from './world';
 
 /**
  * Procedural art.
@@ -272,6 +272,10 @@ function paintMedallion(c: Ctx, m: { cx: number; cy: number; r: number }) {
   const R = (m.r + 0.5) * TILE - 4;
 
   c.save();
+  // Held back deliberately. At full strength the rose is the most contrasted
+  // thing in the chamber and the exhibit standing on it disappears into the
+  // middle of it — the floor out-competing the object it exists to present.
+  c.globalAlpha = 0.5;
   ring(c, x, y, R, R, 2.5, PAL.inlayLine);
   ring(c, x, y, R - 6, R - 6, 1, PAL.inlayLine);
   ring(c, x, y, R * 0.42, R * 0.42, 1.5, PAL.inlayLine);
@@ -467,7 +471,7 @@ function paintWindow(c: Ctx, x: number, y: number, tx: number, ty: number) {
   }
 }
 
-function paintPillar(c: Ctx, x: number, y: number) {
+export function paintPillar(c: Ctx, x: number, y: number) {
   const cx = x + TILE / 2;
   contact(c, cx + 3, y + TILE - 3, 15, 6);
   // Shaft, drawn as a column with a lit left edge.
@@ -545,11 +549,15 @@ export function paintGround(c: Ctx) {
           paintRug(c, x, y, tx, ty);
           break;
         case Cell.Wall:
-        case Cell.Pillar:
         case Cell.Shelf:
-          // Props stand on floor; paint it first so their shadows land on stone.
+          // Shelving stands on floor; paint it first so shadows land on stone.
           paintFloor(c, x, y, tx, ty);
           paintWallTop(c, x, y, tx, ty);
+          break;
+        case Cell.Pillar:
+          // Floor only. The column itself is drawn per frame so the player
+          // can pass behind it — see `pillars` in world.ts.
+          paintFloor(c, x, y, tx, ty);
           break;
         case Cell.Window:
           paintWallTop(c, x, y, tx, ty);
@@ -582,7 +590,6 @@ export function paintGround(c: Ctx) {
       if (cell === Cell.Wall || cell === Cell.Window) paintWallEdge(c, x, y, tx, ty);
       if (cell === Cell.Wall && open) paintWallFace(c, x, y, tx, ty);
       if (cell === Cell.Window) paintWindow(c, x, y, tx, ty);
-      if (cell === Cell.Pillar) paintPillar(c, x, y);
       if (cell === Cell.Shelf) paintShelf(c, x, y, tx, ty);
     }
   }
@@ -595,6 +602,19 @@ export function paintGround(c: Ctx) {
  */
 export function lightSources(): { x: number; y: number; r: number; a: number }[] {
   const out: { x: number; y: number; r: number; a: number }[] = [];
+
+  // Braziers. Tighter and warmer than a window, and they are the reason the
+  // corners of a chamber are not dead space.
+  for (const d of decor) {
+    if (d.kind !== 'brazier') continue;
+    out.push({
+      x: (d.x + 0.5) * TILE,
+      y: (d.y + 0.2) * TILE,
+      r: TILE * 3.4,
+      a: 0.9,
+    });
+  }
+
   for (let ty = 0; ty < MAP_H; ty++) {
     for (let tx = 0; tx < MAP_W; tx++) {
       if (cellAt(tx, ty) !== Cell.Window) continue;
@@ -606,12 +626,47 @@ export function lightSources(): { x: number; y: number; r: number; a: number }[]
       out.push({
         x: (tx + 0.5 + dx) * TILE,
         y: (ty + 0.5 + dy) * TILE,
-        r: TILE * 4.2,
-        a: 0.5,
+        r: TILE * 5,
+        a: 1,
       });
     }
   }
   return out;
+}
+
+/**
+ * A floor plan for the minimap, as a data URL.
+ *
+ * The first minimap was exhibit dots on a blank card, which told the player
+ * where things were but not where *they* were — a dot in an empty rectangle
+ * conveys nothing about whether you are in a chamber or the nave. Drawing
+ * the actual walls makes it a map. One pixel per tile, built once.
+ */
+export function floorPlanDataUrl(scale = 3): string {
+  const cv = document.createElement('canvas');
+  cv.width = MAP_W * scale;
+  cv.height = MAP_H * scale;
+  const c = cv.getContext('2d');
+  if (!c) return '';
+
+  c.fillStyle = 'rgba(0,0,0,0)';
+  c.fillRect(0, 0, cv.width, cv.height);
+  for (let ty = 0; ty < MAP_H; ty++) {
+    for (let tx = 0; tx < MAP_W; tx++) {
+      const cell = cellAt(tx, ty);
+      let fill: string | null = null;
+      if (cell === Cell.Wall) fill = '#8d7a5e';
+      else if (cell === Cell.Window) fill = '#6fb6c4';
+      else if (cell === Cell.Rug) fill = '#2e818c';
+      else if (cell === Cell.Inlay) fill = '#dcc68f';
+      else if (cell === Cell.Floor || cell === Cell.Pillar || cell === Cell.Shelf)
+        fill = '#f0e7d4';
+      if (!fill) continue;
+      c.fillStyle = fill;
+      c.fillRect(tx * scale, ty * scale, scale, scale);
+    }
+  }
+  return cv.toDataURL('image/png');
 }
 
 export { contact, circle, ellipse, line, r as rect, ring, hash };

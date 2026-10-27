@@ -142,6 +142,16 @@ export const ui = {
   },
   'palace.hintOpen': { en: 'Press E to look closer', zh: '按 E 细看', ru: 'Нажмите E, чтобы рассмотреть' },
   'palace.index': { en: 'Everything in this room', zh: '这个房间里的一切', ru: 'Всё в этом зале' },
+  'hall.controls': {
+    en: 'WASD or arrows to walk · E to examine',
+    zh: 'WASD 或方向键行走 · E 查看',
+    ru: 'WASD или стрелки — идти · E — рассмотреть',
+  },
+  'hall.scroll': {
+    en: 'Scroll for the written index',
+    zh: '向下滚动查看文字目录',
+    ru: 'Прокрутите вниз до текстового списка',
+  },
   'palace.readCase': { en: 'Read the case study', zh: '阅读案例', ru: 'Читать разбор' },
 
   'footprints.eyebrow': { en: 'Footprints', zh: '足迹', ru: 'География' },
