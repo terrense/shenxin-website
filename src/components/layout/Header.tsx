@@ -145,6 +145,15 @@ export function Header() {
                   </Link>
                 </li>
               ))}
+              {/* A real route rather than a hash — it is its own page. */}
+              <li>
+                <Link
+                  to="/footprints"
+                  className="rounded-lg px-3 py-2 text-[0.8125rem] text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
+                >
+                  {ui('footprints.eyebrow')}
+                </Link>
+              </li>
             </ul>
           </nav>
 
@@ -226,6 +235,14 @@ export function Header() {
                     </li>
                   ))}
                   <li className="pt-2">
+                    <Link
+                      to="/footprints"
+                      className="block rounded-lg px-3 py-3 font-display text-lg text-ink"
+                    >
+                      {ui('footprints.eyebrow')}
+                    </Link>
+                  </li>
+                  <li>
                     <Link
                       to="/projects"
                       className="block rounded-lg px-3 py-3 font-display text-lg text-accent-ink"

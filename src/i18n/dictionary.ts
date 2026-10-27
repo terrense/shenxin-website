@@ -119,6 +119,20 @@ export const ui = {
   'writing.minutes': { en: 'min read', zh: '分钟阅读', ru: 'мин чтения' },
   'writing.unpublished': { en: 'Unpublished', zh: '未发布', ru: 'Не опубликовано' },
 
+  'footprints.eyebrow': { en: 'Footprints', zh: '足迹', ru: 'География' },
+  'footprints.title': { en: 'Where I have been', zh: '我去过的地方', ru: 'Где я побывал' },
+  'footprints.lede': {
+    en: 'Five countries across two continents — mostly because the work went there, and the work is most of the story.',
+    zh: '五个国家，横跨两个大洲——大多是因为工作去的，而工作几乎就是故事的全部。',
+    ru: 'Пять стран на двух континентах — в основном потому, что туда вела работа, а работа и есть бо́льшая часть этой истории.',
+  },
+  'footprints.countries': { en: 'countries', zh: '个国家', ru: 'стран' },
+  'footprints.note': {
+    en: 'Countries are filled from a list, not inferred from anything. Only places actually visited are marked.',
+    zh: '地图上的国家来自一份人工维护的列表，而非任何推断。只标注真正去过的地方。',
+    ru: 'Страны отмечаются по списку, который ведётся вручную, а не выводятся автоматически. Отмечены только те места, где я действительно был.',
+  },
+
   'about.eyebrow': { en: '07 — About', zh: '07 — 关于', ru: '07 — Обо мне' },
   'about.title': { en: 'How I work', zh: '我的工作方式', ru: 'Как я работаю' },
   'about.capabilities': { en: 'Capabilities', zh: '技术能力', ru: 'Компетенции' },
