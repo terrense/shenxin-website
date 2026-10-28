@@ -131,13 +131,22 @@ export const socials: Array<{ id: string; label: string; href: string | null }> 
  */
 const allNavSections: Array<{ id: string; label: L; requires?: 'publications' | 'articles' }> =
   [
+    /*
+     * These are nav labels, not section headings — they live in a single
+     * horizontal bar alongside a language switcher and a call to action.
+     * Russian runs about 40% longer than English here, and the full forms
+     * ("Робототехника", "Исследования") pushed the contact button off the
+     * right edge of a 1280px window. The section headings inside the page
+     * keep the long forms; only the bar is abbreviated, which is what a
+     * navigation label is for.
+     */
     { id: 'work', label: { en: 'Work', zh: '项目', ru: 'Проекты' } },
     { id: 'agentic', label: { en: 'Agentic & RL', zh: 'Agent 与 RL', ru: 'Агенты и RL' } },
-    { id: 'robotics', label: { en: 'Robotics', zh: '机器人', ru: 'Робототехника' } },
+    { id: 'robotics', label: { en: 'Robotics', zh: '机器人', ru: 'Роботы' } },
     { id: 'healthcare', label: { en: 'Healthcare', zh: '医疗 AI', ru: 'Медицина' } },
     {
       id: 'research',
-      label: { en: 'Research', zh: '研究', ru: 'Исследования' },
+      label: { en: 'Research', zh: '研究', ru: 'Наука' },
       requires: 'publications',
     },
     {

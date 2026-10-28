@@ -133,6 +133,20 @@ try {
       configuration: 'mobile',
     });
   }
+  // Force the interface language before the app boots. The locale lives in
+  // localStorage, so it has to be seeded on the origin and the page reloaded
+  // — otherwise every screenshot is whatever the headless browser's
+  // Accept-Language happens to be, which makes checking a translation
+  // impossible.
+  const locale = flag('locale');
+  if (locale) {
+    await send('Page.navigate', { url: new URL(url).origin + '/' });
+    await sleep(600);
+    await send('Runtime.evaluate', {
+      expression: `localStorage.setItem('portfolio.locale', ${JSON.stringify(locale)})`,
+    });
+  }
+
   await send('Page.navigate', { url });
   await sleep(wait);
 

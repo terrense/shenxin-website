@@ -133,13 +133,13 @@ export function Header() {
             <Mark />
           </Link>
 
-          <nav aria-label="Primary" className="hidden lg:block">
+          <nav aria-label="Primary" className="hidden xl:block">
             <ul className="flex items-center gap-1">
               {navSections.map((item) => (
                 <li key={item.id}>
                   <Link
                     to={`/#${item.id}`}
-                    className="rounded-lg px-3 py-2 text-[0.8125rem] text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
+                    className="rounded-lg px-3 py-2 text-[0.8125rem] whitespace-nowrap text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
                   >
                     {tl(item.label)}
                   </Link>
@@ -149,7 +149,7 @@ export function Header() {
               <li>
                 <Link
                   to="/hall"
-                  className="rounded-lg px-3 py-2 text-[0.8125rem] text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
+                  className="rounded-lg px-3 py-2 text-[0.8125rem] whitespace-nowrap text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
                 >
                   {ui('palace.eyebrow')}
                 </Link>
@@ -157,7 +157,7 @@ export function Header() {
               <li>
                 <Link
                   to="/footprints"
-                  className="rounded-lg px-3 py-2 text-[0.8125rem] text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
+                  className="rounded-lg px-3 py-2 text-[0.8125rem] whitespace-nowrap text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink"
                 >
                   {ui('footprints.eyebrow')}
                 </Link>
@@ -180,7 +180,7 @@ export function Header() {
               onClick={() => setOpen(true)}
               aria-label={ui('nav.menu')}
               aria-expanded={open}
-              className="inline-flex size-9 items-center justify-center rounded-lg border border-line text-ink-2 transition-colors hover:text-ink lg:hidden"
+              className="inline-flex size-9 items-center justify-center rounded-lg border border-line text-ink-2 transition-colors hover:text-ink xl:hidden"
             >
               <Menu className="size-5" />
             </button>
@@ -191,7 +191,7 @@ export function Header() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-60 lg:hidden"
+            className="fixed inset-0 z-60 xl:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
