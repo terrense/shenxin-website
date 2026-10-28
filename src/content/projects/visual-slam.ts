@@ -63,7 +63,11 @@ export const visualSlam: Project = {
       value: 'indoor',
       provenance: 'spec',
       label: { en: 'Target environment', zh: '目标环境', ru: 'Целевая среда' },
-      detail: { en: 'Where GNSS is unavailable', zh: 'GNSS 不可用的场景', ru: 'Там, где ГНСС недоступна' },
+      detail: {
+        en: 'Where GNSS is unavailable',
+        zh: 'GNSS 不可用的场景',
+        ru: 'Там, где ГНСС недоступна',
+      },
     },
   ],
   featured: true,
@@ -72,10 +76,11 @@ export const visualSlam: Project = {
   sections: [
     {
       id: 'problem',
-      title: { en: 'Problem', zh: '问题' },
+      title: { en: 'Problem', zh: '问题', ru: 'Задача' },
       lede: {
         en: 'Indoors there is no GNSS, and point features alone are a weak map.',
         zh: '室内没有 GNSS，而仅靠点特征构成的地图很脆弱。',
+        ru: 'В помещении нет ГНСС, а карта из одних только точечных признаков слаба.',
       },
       blocks: [
         {
@@ -83,6 +88,7 @@ export const visualSlam: Project = {
           body: {
             en: 'The GNSS/INS work stops at the door. Indoors the satellite constraint disappears entirely and the inertial solution drifts without bound, so the camera has to carry localisation on its own. Classical visual SLAM does this with point features — corners tracked between frames — which works until the robot faces the surfaces that indoor environments are actually made of: blank walls, uniform floors, long corridors. Those scenes are rich in structure and poor in corners.',
             zh: 'GNSS/INS 的工作止步于门口。室内卫星约束完全消失，惯导解算会无界漂移，因此定位必须由相机独自承担。经典视觉 SLAM 依靠点特征——在帧间跟踪的角点——这在机器人面对室内环境真正由之构成的表面之前都还奏效：空白墙面、均质地板、长走廊。这些场景结构丰富，但角点匮乏。',
+            ru: 'Работа по ГНСС/ИНС заканчивается у двери. В помещении спутниковое ограничение исчезает полностью, инерциальное решение уходит без предела, и локализацию приходится нести камере в одиночку. Классический визуальный SLAM делает это на точечных признаках — углах, сопровождаемых между кадрами, — и это работает ровно до встречи с поверхностями, из которых помещения на самом деле и состоят: глухие стены, однородные полы, длинные коридоры. Такие сцены богаты структурой и бедны углами.',
           },
         },
         {
@@ -90,43 +96,60 @@ export const visualSlam: Project = {
           body: {
             en: 'A blank corridor wall has almost no trackable points and several strong lines. A doorway has a semantic identity that persists across viewpoints where its individual corners do not. Using only one of the three representations means discarding information the scene is actively offering.',
             zh: '一面空白的走廊墙壁几乎没有可跟踪的点，却有若干条明显的直线。一个门框具有跨视角持续存在的语义身份，而它的各个角点并不具备这种持续性。只使用三种表示中的一种，等于主动丢弃场景正在提供的信息。',
+            ru: 'У глухой стены коридора почти нет отслеживаемых точек и есть несколько чётких линий. У дверного проёма есть семантическая идентичность, которая переживает смену ракурса, чего не скажешь об отдельных его углах. Использовать лишь одно из трёх представлений — значит выбрасывать информацию, которую сцена сама предлагает.',
           },
         },
       ],
     },
     {
       id: 'architecture',
-      title: { en: 'System architecture', zh: '系统架构' },
+      title: { en: 'System architecture', zh: '系统架构', ru: 'Архитектура системы' },
       blocks: [
         {
           kind: 'bullets',
           items: [
             {
-              label: { en: 'Point and line features', zh: '点与线特征' },
+              label: {
+                en: 'Point and line features',
+                zh: '点与线特征',
+                ru: 'Точечные и линейные признаки',
+              },
               body: {
                 en: 'Lines are tracked alongside points so low-texture structured scenes still constrain the pose. A line is also a stronger constraint per observation — it fixes two rotational degrees of freedom where a point fixes a bearing.',
                 zh: '直线与点同时被跟踪，使低纹理的结构化场景仍能约束位姿。就单次观测而言，直线也是更强的约束——它固定两个旋转自由度，而点只固定一个方位。',
+                ru: 'Линии сопровождаются наряду с точками, чтобы слабо текстурированные, но структурированные сцены всё равно ограничивали позу. На одно наблюдение линия к тому же даёт более сильное ограничение: она фиксирует две вращательные степени свободы там, где точка фиксирует направление.',
               },
             },
             {
-              label: { en: 'Object-level semantic landmarks', zh: '物体级语义路标' },
+              label: {
+                en: 'Object-level semantic landmarks',
+                zh: '物体级语义路标',
+                ru: 'Семантические ориентиры уровня объектов',
+              },
               body: {
                 en: 'Recognised objects become map entities with identity, which is what makes loop closure survive a viewpoint change large enough to destroy raw descriptor matching.',
                 zh: '被识别的物体成为具有身份的地图实体——正是这一点让回环检测能够在视角变化大到足以摧毁原始描述子匹配时依然成立。',
+                ru: 'Распознанные объекты становятся сущностями карты с идентичностью — именно это позволяет замыканию цикла пережить смену ракурса, достаточную, чтобы разрушить сопоставление сырых дескрипторов.',
               },
             },
             {
-              label: { en: 'Learned sub-modules', zh: '学习式子模块' },
+              label: { en: 'Learned sub-modules', zh: '学习式子模块', ru: 'Обучаемые подмодули' },
               body: {
                 en: 'Selected classical stages are replaced with lightweight networks rather than the pipeline being rewritten end-to-end. The classical geometry stays, because it is the part that is verifiable.',
                 zh: '用轻量化网络替换部分经典阶段，而不是把整条流水线改写成端到端。经典几何部分被保留，因为那是可验证的部分。',
+                ru: 'Отдельные классические этапы заменены лёгкими сетями, а не весь конвейер переписан в end-to-end. Классическая геометрия остаётся, потому что именно она поддаётся проверке.',
               },
             },
             {
-              label: { en: 'Camera/IMU calibration', zh: '相机/IMU 标定' },
+              label: {
+                en: 'Camera/IMU calibration',
+                zh: '相机/IMU 标定',
+                ru: 'Калибровка камеры и ИНС',
+              },
               body: {
                 en: 'Intrinsic and extrinsic calibration is treated as part of the system, not a prerequisite someone else supplies. A wrong extrinsic is indistinguishable from a bad estimator until you look for it specifically.',
                 zh: '内参与外参标定被视为系统的一部分，而不是由他人提供的前置条件。在你专门去查之前，一个错误的外参和一个糟糕的估计器是无法区分的。',
+                ru: 'Калибровка внутренних и внешних параметров считается частью системы, а не предпосылкой, которую приносит кто-то другой. Неверные внешние параметры неотличимы от плохого оценивателя, пока их не начнёшь искать целенаправленно.',
               },
             },
           ],
@@ -140,10 +163,12 @@ export const visualSlam: Project = {
           alt: {
             en: 'RViz visualising a point-line visual-inertial SLAM session, with red line landmarks, green point landmarks, the pose-graph trajectory, and two feature-tracker image panes.',
             zh: 'RViz 可视化点线视觉惯性 SLAM 运行过程：红色线路标、绿色点路标、位姿图轨迹，以及两个特征跟踪图像窗格。',
+            ru: 'RViz визуализирует сеанс точечно-линейного визуально-инерциального SLAM: красные линейные ориентиры, зелёные точечные ориентиры, траектория графа поз и две панели с изображениями трекеров признаков.',
           },
           caption: {
             en: 'A live session. Red segments are line landmarks, green dots are point landmarks, and the black curve is the estimated pose-graph trajectory. The two panes on the left show what each tracker sees — the upper one matching lines across frames, the lower one points. The structure of the scene is carried almost entirely by the red.',
             zh: '一次实时运行。红色线段是线路标，绿色点是点路标，黑色曲线是估计出的位姿图轨迹。左侧两个窗格显示各跟踪器所见——上方跨帧匹配直线，下方匹配点。场景的结构几乎完全由红色部分承载。',
+            ru: 'Живой сеанс. Красные отрезки — линейные ориентиры, зелёные точки — точечные, чёрная кривая — оценённая траектория графа поз. Две панели слева показывают, что видит каждый трекер: верхняя сопоставляет линии между кадрами, нижняя — точки. Структуру сцены несёт почти исключительно красное.',
           },
         },
         {
@@ -155,29 +180,33 @@ export const visualSlam: Project = {
           alt: {
             en: 'A small four-wheeled indoor research robot carrying a spinning LiDAR, a camera, an onboard compute board and a battery on an open laser-cut chassis.',
             zh: '一台小型四轮室内研究机器人：开放式激光切割底盘上搭载旋转激光雷达、相机、板载计算单元与电池。',
+            ru: 'Небольшой четырёхколёсный исследовательский робот для помещений: вращающийся лидар, камера, бортовая вычислительная плата и аккумулятор на открытом шасси лазерной резки.',
           },
           caption: {
             en: 'The platform the work ran on. Deliberately open-frame: every cable is reachable, which matters when the thing you are debugging is an extrinsic calibration and you need to measure where a sensor physically sits.',
             zh: '承载这项工作的平台。刻意采用开放式结构：每根线缆都触手可及——当你要调试的是外参标定、需要实地量一个传感器究竟装在哪里时，这一点很重要。',
+            ru: 'Платформа, на которой всё это работало. Открытая рама намеренно: до любого кабеля можно дотянуться — а это важно, когда отлаживаешь именно внешнюю калибровку и нужно физически измерить, где стоит датчик.',
           },
         },
         {
           kind: 'callout',
           tone: 'note',
-          title: { en: 'Scope', zh: '范围说明' },
+          title: { en: 'Scope', zh: '范围说明', ru: 'Границы работы' },
           body: {
             en: 'This is doctoral research, evaluated on the indoor mobile-robot platform shown above. It is reported here as an investigation rather than a deployed product, and no benchmark numbers are claimed on this page.',
             zh: '这是在上图所示室内移动机器人平台上评测的博士研究工作。此处以研究探索的形式呈现，而非已部署的产品，本页也不声称任何基准测试数值。',
+            ru: 'Это диссертационное исследование, проверенное на показанной выше мобильной платформе для помещений. Здесь оно изложено как исследование, а не как развёрнутый продукт, и никакие числа бенчмарков на этой странице не заявляются.',
           },
         },
       ],
     },
     {
       id: 'experiments',
-      title: { en: 'Experiments', zh: '实验' },
+      title: { en: 'Experiments', zh: '实验', ru: 'Эксперименты' },
       lede: {
         en: 'Replacing a classical detector is only worth it if the keypoints are better placed.',
         zh: '替换经典检测器，只有在关键点分布更好时才值得。',
+        ru: 'Заменять классический детектор стоит только если ключевые точки расположены лучше.',
       },
       blocks: [
         {
@@ -189,23 +218,30 @@ export const visualSlam: Project = {
           alt: {
             en: 'A figure showing the ConvPoint encoder–decoder architecture on the left, and on the right the same indoor scene with ORB keypoints above and ConvPoint keypoints below.',
             zh: '左侧为 ConvPoint 编码器-解码器结构图，右侧为同一室内场景下 ORB（上）与 ConvPoint（下）的关键点分布对比。',
+            ru: 'Рисунок: слева архитектура кодер-декодер ConvPoint, справа одна и та же сцена помещения — сверху ключевые точки ORB, снизу ConvPoint.',
           },
           caption: {
             en: 'A shared encoder feeds two decoders — one producing interest points, one producing descriptors — the same role ORB and SURF play classically. The comparison on the right is the actual argument: ORB piles its keypoints onto the few high-contrast clusters in the scene, while ConvPoint spreads them across surfaces that have structure but little texture. Evenly distributed keypoints are what keeps the pose well-conditioned. (Figure labels are in Russian — it is reproduced from the original dissertation material.)',
             zh: '一个共享编码器接出两个解码器——一个输出兴趣点，一个输出描述子——承担 ORB 与 SURF 在经典方法中的角色。右侧的对比才是真正的论据：ORB 把关键点堆积在场景中少数高对比度区域，而 ConvPoint 将其分散到那些有结构但缺乏纹理的表面上。关键点分布均匀，才能让位姿求解保持良态。（图中标注为俄语——该图复现自原始学位论文材料。）',
+            ru: 'Общий кодировщик питает два декодера — один выдаёт особые точки, другой дескрипторы, — то есть ровно ту роль, которую классически играют ORB и SURF. Настоящий аргумент здесь справа: ORB сваливает ключевые точки на немногие контрастные скопления сцены, тогда как ConvPoint распределяет их по поверхностям, у которых есть структура, но почти нет текстуры. Именно равномерное распределение ключевых точек удерживает задачу определения позы хорошо обусловленной. (Подписи на рисунке по-русски — он воспроизведён из материалов диссертации.)',
           },
         },
       ],
     },
     {
       id: 'reflection',
-      title: { en: 'What carried forward', zh: '延续下来的东西' },
+      title: {
+        en: 'What carried forward',
+        zh: '延续下来的东西',
+        ru: 'Что перешло дальше',
+      },
       blocks: [
         {
           kind: 'prose',
           body: {
             en: 'Two habits from this work show up in everything later. First, calibrate before you debug — a surprising share of "algorithm problems" are extrinsics. Second, keep the geometry classical and let learning handle perception: the learned part should produce observations you can verify, not decisions you have to trust.',
             zh: '这项工作留下的两个习惯贯穿了之后的一切。第一，先标定再调试——相当比例的"算法问题"其实是外参问题。第二，几何部分保持经典，让学习负责感知：学习出来的应该是你能验证的观测，而不是你只能选择相信的决策。',
+            ru: 'Две привычки из этой работы проявляются во всём последующем. Первая: калибруй до того, как отлаживать, — удивительно большая доля «проблем с алгоритмом» оказывается внешними параметрами. Вторая: геометрию оставляй классической, а обучению отдавай восприятие — обученная часть должна выдавать наблюдения, которые можно проверить, а не решения, которым остаётся только верить.',
           },
         },
       ],
