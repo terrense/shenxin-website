@@ -624,18 +624,39 @@ export type Facing = 'down' | 'up' | 'left' | 'right';
  * contact poses; the body rises a pixel on the passing frames, which is the
  * entire secret of a walk cycle that does not look like sliding.
  */
-export function paintHero(c: Ctx, cx: number, by: number, facing: Facing, frame: number) {
+/**
+ * Colour sets. Index 0 is the player; the rest are the archivists, who need
+ * to be distinguishable from the player at a glance and from each other at
+ * the size they are actually drawn. Hair and coat carry that distinction,
+ * because at 24 px nothing else is visible.
+ */
+const LOOKS = [
+  { skin: '#e8bb90', skinDk: '#c9966c', hair: '#241f2b', coat: PAL.slate, coatLt: PAL.slateLit },
+  { skin: '#d9a87c', skinDk: '#b4855c', hair: '#5a3b22', coat: '#4a4030', coatLt: '#6a5c44' },
+  { skin: '#f0cba4', skinDk: '#cfa47c', hair: '#7a7a82', coat: '#5e3a44', coatLt: '#7e5460' },
+  { skin: '#c99466', skinDk: '#a2744c', hair: '#1c1a22', coat: '#2c5157', coatLt: '#3f7079' },
+] as const;
+
+export function paintHero(
+  c: Ctx,
+  cx: number,
+  by: number,
+  facing: Facing,
+  frame: number,
+  look = 0,
+) {
   c.imageSmoothingEnabled = false;
-  const f = frame & 3;
+  const f = Math.floor(frame) & 3;
   const passing = f === 0 || f === 2;
   const swing = f === 1 ? 1 : f === 3 ? -1 : 0;
   const bob = passing ? -1 : 0;
 
-  const SKIN = '#e8bb90';
-  const SKIN_DK = '#c9966c';
-  const HAIR = '#241f2b';
-  const COAT = PAL.slate;
-  const COAT_LT = PAL.slateLit;
+  const pal = LOOKS[look % LOOKS.length];
+  const SKIN = pal.skin;
+  const SKIN_DK = pal.skinDk;
+  const HAIR = pal.hair;
+  const COAT = pal.coat;
+  const COAT_LT = pal.coatLt;
   const TROUSER = '#343042';
   const BOOT = '#241c18';
 
@@ -664,8 +685,9 @@ export function paintHero(c: Ctx, cx: number, by: number, facing: Facing, frame:
   r(c, cx - 5, y - 20, 10, 12, COAT);
   r(c, cx - 5, y - 20, 10, 2, COAT_LT);
   r(c, cx - 5, y - 9, 10, 1, '#1e2733');
-  if (facing === 'down') {
-    // Open front with a lighter shirt showing.
+  if (facing === 'down' && look === 0) {
+    // Open front with a lighter shirt showing. Player only — it is the one
+    // cue that separates "me" from "someone else" in a crowd of sprites.
     r(c, cx - 1, y - 18, 2, 9, PAL.cream);
     r(c, cx - 1, y - 18, 2, 2, PAL.brass);
   }

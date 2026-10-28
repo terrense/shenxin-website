@@ -21,11 +21,13 @@ const root = resolve(import.meta.dirname, '..');
 
 const dir = await mkdtemp(join(tmpdir(), 'world-'));
 const out = join(dir, 'world.mjs');
+const npcOut = join(dir, 'npc.mjs');
 
 try {
   await build({
-    entryPoints: [join(root, 'src/game/world.ts')],
-    outfile: out,
+    entryPoints: [join(root, 'src/game/world.ts'), join(root, 'src/game/npc.ts')],
+    outdir: dir,
+    outExtension: { '.js': '.mjs' },
     bundle: true,
     format: 'esm',
     platform: 'node',
@@ -65,7 +67,16 @@ try {
   );
   console.log(`exhibits: ${w.placed.length}`);
 
+  // NPC routes, checked here so a walker that clips a bench fails the build
+  // instead of logging into a console nobody has open.
+  const npc = await import(pathToFileURL(npcOut).href);
   const problems = w.assertWorld();
+  npc.ROUTES.forEach((route, i) => {
+    const fault = npc.routeFault(route);
+    if (fault) problems.push(`npc route ${i} crosses a blocked tile at ${fault.x},${fault.y}`);
+  });
+  console.log(`npc routes: ${npc.ROUTES.length}`);
+
   if (problems.length) {
     console.error('\nFAIL');
     for (const p of problems) console.error('  ' + p);

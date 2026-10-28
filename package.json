@@ -14,8 +14,11 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:render": "node scripts/check-render.mjs",
     "check:keys": "node scripts/check-ui-keys.mjs",
-    "check": "npm run check:assets && npm run typecheck && npm run check:contrast && npm run build && npm run check:classes",
+    "check:world": "node scripts/dump-world.mjs",
+    "check": "npm run check:assets && npm run check:world && npm run typecheck && npm run check:contrast && npm run build && npm run check:classes",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"scripts/*.mjs\" \"*.{json,ts,html}\"",
+    "art": "node scripts/art-preview.mjs",
+    "shot": "node scripts/shot.mjs",
     "og": "node scripts/make-og.mjs"
   },
   "dependencies": {

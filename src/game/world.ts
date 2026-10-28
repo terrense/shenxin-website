@@ -110,14 +110,17 @@ export const MEDALLIONS = [
 ] as const;
 
 /**
- * Two rows north of the south wall, not one.
+ * Directly south of the astrolabe, which carries the controls.
  *
- * At row 36 the camera clamps against the bottom of the map and the figure
- * sits half off the viewport edge on the opening frame — the first thing
- * anyone sees, and it looks like a bug. Row 34 gives the clamp something to
- * work with and opens on the nave running north toward the window.
+ * Two things were wrong with starting at the south door. The camera clamps
+ * against the bottom of the map there, so the figure sits half off the
+ * viewport edge on the opening frame — the first thing anyone sees, and it
+ * looks like a bug. And it starts the player out of reach of everything, so
+ * the interaction prompt never appears until they have already guessed that
+ * one exists. Starting in reach of the first exhibit means the prompt is on
+ * screen at load, which teaches the mechanic without a tutorial.
  */
-export const START = { x: 27, y: 34 };
+export const START = { x: 27, y: 32 };
 
 function build(): Grid {
   const g: Grid = new Uint8Array(MAP_W * MAP_H).fill(Cell.Wall);

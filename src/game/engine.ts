@@ -1,3 +1,4 @@
+import { makeNpcs, stepNpc } from './npc';
 import { lightSources, paintGround } from './paint';
 import { entities, paintHero, type Facing } from './props';
 import {
@@ -60,6 +61,7 @@ export class Scene {
   private frameT = 0;
   private walked = false;
   private t = 0;
+  private npcs = makeNpcs();
 
   /** Device-pixel size of the backing store, set by `resize`. */
   private w = 0;
@@ -192,6 +194,12 @@ export class Scene {
   step(dt: number, input: Input) {
     this.t += dt;
 
+    // Archivists keep walking under reduced motion. The preference is about
+    // vestibular triggers — large, fast, unexpected movement — not about
+    // three small figures strolling at two tiles a second, and freezing them
+    // turns a hall into a waxworks for the people who asked for it.
+    for (const n of this.npcs) stepNpc(n, dt);
+
     let vx = input.ax;
     let vy = input.ay;
     if (vx === 0 && vy === 0) {
@@ -285,7 +293,21 @@ export class Scene {
     const y0 = this.camY / TILE - 3;
     const y1 = this.camY / TILE + vh + 3;
 
-    const visible = entities.filter((e) => e.x >= x0 && e.x <= x1 && e.y >= y0 && e.y <= y1);
+    const visible: { x: number; y: number; draw: (c: CanvasRenderingContext2D) => void }[] =
+      entities.filter((e) => e.x >= x0 && e.x <= x1 && e.y >= y0 && e.y <= y1);
+
+    // Archivists join the same sort, so they pass behind columns too.
+    for (const n of this.npcs) {
+      const nx = n.x / TILE;
+      const ny = n.y / TILE;
+      if (nx < x0 || nx > x1 || ny < y0 || ny > y1) continue;
+      visible.push({
+        x: nx,
+        y: ny - 0.5,
+        draw: (ctx) => paintHero(ctx, n.x, n.y, n.facing, n.frame, n.look + 1),
+      });
+    }
+
     const heroY = this.y / TILE;
     visible.sort((a, b) => a.y - b.y);
 

@@ -110,19 +110,27 @@ function drawHall() {
   A.paintHero(fg, (A.START.x + 0.5) * A.TILE, heroY * A.TILE, 'down', 0);
   while (i < sorted.length) sorted[i++].draw(fg);
 
-  // Light, the same way the live scene composites it.
+  // Light, built exactly the way engine.ts builds it: a translucent warm
+  // shade over everything with the lit areas erased out of it. This has to
+  // stay in step with the engine or the preview lies — it did, for one
+  // iteration, and showed a blown-out hall that the live page never had.
   if (A.lightSources) {
-    fg.save();
-    fg.globalCompositeOperation = 'screen';
+    const lc = document.createElement('canvas');
+    lc.width = full.width;
+    lc.height = full.height;
+    const l = lc.getContext('2d');
+    l.fillStyle = 'rgba(70,54,38,0.34)';
+    l.fillRect(0, 0, lc.width, lc.height);
+    l.globalCompositeOperation = 'destination-out';
     for (const s of A.lightSources()) {
-      const rg = fg.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
-      rg.addColorStop(0, 'rgba(255,230,173,' + s.a + ')');
-      rg.addColorStop(0.5, 'rgba(255,230,173,' + (s.a * 0.35) + ')');
-      rg.addColorStop(1, 'rgba(255,230,173,0)');
-      fg.fillStyle = rg;
-      fg.fillRect(s.x - s.r, s.y - s.r, s.r * 2, s.r * 2);
+      const rg = l.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+      rg.addColorStop(0, 'rgba(0,0,0,' + Math.min(1, s.a * 2) + ')');
+      rg.addColorStop(0.5, 'rgba(0,0,0,' + (s.a * 0.8) + ')');
+      rg.addColorStop(1, 'rgba(0,0,0,0)');
+      l.fillStyle = rg;
+      l.fillRect(s.x - s.r, s.y - s.r, s.r * 2, s.r * 2);
     }
-    fg.restore();
+    fg.drawImage(lc, 0, 0);
   }
 
   let sx = 0, sy = 0, sw = full.width, sh = full.height, zoom = 1;

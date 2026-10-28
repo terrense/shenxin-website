@@ -446,18 +446,53 @@ function paintWindow(c: Ctx, x: number, y: number, tx: number, ty: number) {
   const horizontal = below === Cell.Floor || below === Cell.Inlay || below === Cell.Rug;
 
   if (horizontal) {
-    // North wall: the opening is on the face, so it is seen edge-on.
-    const H = 14;
-    const g = c.createLinearGradient(0, y + TILE, 0, y + TILE + H);
-    g.addColorStop(0, PAL.sky);
+    /**
+     * North wall: the opening is on the face, seen edge-on.
+     *
+     * The first version was fourteen pixels of pale sky behind two brass
+     * mullions, and across six tiles it read as a white picket fence rather
+     * than a window — too short to have proportion and too pale to look
+     * like an opening. This is taller, darker at the head where a real
+     * window falls into shadow, and carries a stone reveal so the glass
+     * sits *inside* the wall instead of being painted on it.
+     */
+    const H = 24;
+    const top = y + TILE;
+
+    // Reveal: the thickness of the wall, visible around the glass.
+    r(c, x, top, TILE, H, PAL.wallBase);
+    r(c, x, top, TILE, 2, PAL.wallFace);
+
+    const g = c.createLinearGradient(0, top, 0, top + H);
+    g.addColorStop(0, '#9fcfdd');
+    g.addColorStop(0.35, PAL.sky);
     g.addColorStop(1, PAL.skyLow);
     c.fillStyle = g;
-    c.fillRect(Math.round(x + 2), Math.round(y + TILE), TILE - 4, H);
-    r(c, x + 2, y + TILE, TILE - 4, 2, PAL.brassDark);
-    r(c, x + 2, y + TILE + H - 2, TILE - 4, 2, PAL.brass);
-    r(c, x + TILE / 2 - 1, y + TILE, 2, H, PAL.brass);
-    r(c, x + 2, y + TILE + H / 2 - 1, TILE - 4, 2, PAL.brass);
-    r(c, x, y + TILE + H, TILE, 1, PAL.outline);
+    c.fillRect(Math.round(x), Math.round(top + 3), TILE, H - 6);
+
+    // Distant land along the horizon — three countries' worth of nothing in
+    // particular, but it stops the glass reading as a blank light box.
+    c.save();
+    c.globalAlpha = 0.5;
+    r(c, x, top + H - 11, TILE, 3, '#8fb3ae');
+    c.globalAlpha = 0.3;
+    r(c, x, top + H - 8, TILE, 2, '#a7c2b4');
+    c.restore();
+
+    // Leading: one vertical per tile and two transoms, so the whole six-tile
+    // run reads as one window divided rather than six small ones.
+    r(c, x + TILE / 2 - 1, top + 3, 2, H - 6, PAL.brassDark);
+    r(c, x, top + 3, TILE, 1.5, PAL.brass);
+    r(c, x, top + 10, TILE, 1.5, PAL.brassDark);
+    r(c, x, top + H - 4, TILE, 2, PAL.brass);
+    r(c, x, top + H - 2, TILE, 2, PAL.wallBase);
+    r(c, x, top + H, TILE, 1, PAL.outline);
+
+    // Sill, catching the light.
+    c.save();
+    c.globalAlpha = 0.55;
+    r(c, x, top + H + 1, TILE, 3, PAL.brassLit);
+    c.restore();
   } else {
     // Side wall: seen from above, so the opening is a bright slot in the cap.
     const g = c.createLinearGradient(x, 0, x + TILE, 0);
@@ -492,6 +527,73 @@ export function paintPillar(c: Ctx, x: number, y: number) {
   r(c, x + 5, y + TILE - 5, TILE - 10, 4, PAL.pillarMid);
   r(c, x + 5, y + TILE - 2, TILE - 10, 1, PAL.outline);
   ellipse(c, cx, y + 4, (TILE - 8) / 2, 3, PAL.wallTop);
+}
+
+/**
+ * A hanging banner on a wall that faces the nave.
+ *
+ * The dividing walls are two tiles thick and thirty-odd tall, which from
+ * above is a large blank slab of the same tan in four places. Banners break
+ * them up, carry the only strong colour above floor level, and give the nave
+ * the one thing a procession route needs — something to walk past.
+ *
+ * `side` is which way the cloth hangs: +1 for a wall whose east face is open.
+ */
+function paintBanner(c: Ctx, x: number, y: number, ty: number, side: 1 | -1) {
+  const w = 15;
+  const h = 30;
+  // Hang from the wall's open edge, spilling a little over it.
+  const bx = side === 1 ? x + TILE - w + 4 : x - 4;
+  const by = y + 1;
+
+  const warm = (ty >> 2) % 2 === 0;
+  const cloth = warm ? PAL.red : PAL.teal;
+  const clothLit = warm ? PAL.redLit : PAL.tealLit;
+
+  c.save();
+  // Shadow cast onto the wall beside it.
+  c.globalAlpha = 0.18;
+  r(c, bx + side * 3, by + 2, w, h, PAL.wallBase);
+  c.globalAlpha = 1;
+
+  // Rod.
+  r(c, bx - 2, by, w + 4, 3, PAL.brassDark);
+  r(c, bx - 2, by, w + 4, 1, PAL.brassLit);
+  circle(c, bx - 2, by + 1.5, 2, PAL.brass);
+  circle(c, bx + w + 2, by + 1.5, 2, PAL.brass);
+
+  // Cloth, with a swallowtail hem.
+  c.beginPath();
+  c.moveTo(bx, by + 3);
+  c.lineTo(bx + w, by + 3);
+  c.lineTo(bx + w, by + h - 6);
+  c.lineTo(bx + w / 2, by + h);
+  c.lineTo(bx, by + h - 6);
+  c.closePath();
+  c.fillStyle = cloth;
+  c.fill();
+  // A lit edge down one side so it is not a flat rectangle.
+  c.save();
+  c.clip();
+  r(c, bx, by + 3, 4, h, clothLit);
+  c.globalAlpha = 0.45;
+  r(c, bx + w - 4, by + 3, 4, h, PAL.ink);
+  c.restore();
+
+  // Gold trim and a compass-point emblem, matching the floor medallions.
+  r(c, bx, by + 6, w, 1.5, PAL.brass);
+  r(c, bx, by + h - 10, w, 1.5, PAL.brass);
+  const ex = bx + w / 2;
+  const ey = by + 16;
+  c.beginPath();
+  c.moveTo(ex, ey - 5.5);
+  c.lineTo(ex + 3, ey);
+  c.lineTo(ex, ey + 5.5);
+  c.lineTo(ex - 3, ey);
+  c.closePath();
+  c.fillStyle = PAL.brass;
+  c.fill();
+  c.restore();
 }
 
 function paintShelf(c: Ctx, x: number, y: number, tx: number, ty: number) {
@@ -589,6 +691,16 @@ export function paintGround(c: Ctx) {
 
       if (cell === Cell.Wall || cell === Cell.Window) paintWallEdge(c, x, y, tx, ty);
       if (cell === Cell.Wall && open) paintWallFace(c, x, y, tx, ty);
+
+      // Banners on the long walls, every sixth course, hung on whichever
+      // side is open. Skipped where a face is already drawn, because a cloth
+      // hanging over an edge the player sees in section reads as a mistake.
+      if (cell === Cell.Wall && !open && ty % 6 === 2) {
+        const eastOpen = cellAt(tx + 1, ty) === Cell.Floor || cellAt(tx + 1, ty) === Cell.Rug;
+        const westOpen = cellAt(tx - 1, ty) === Cell.Floor || cellAt(tx - 1, ty) === Cell.Rug;
+        if (eastOpen) paintBanner(c, x, y, ty, 1);
+        else if (westOpen) paintBanner(c, x, y, ty, -1);
+      }
       if (cell === Cell.Window) paintWindow(c, x, y, tx, ty);
       if (cell === Cell.Shelf) paintShelf(c, x, y, tx, ty);
     }
