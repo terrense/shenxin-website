@@ -147,6 +147,11 @@ export const ui = {
     zh: 'WASD 或方向键行走 · E 查看',
     ru: 'WASD или стрелки — идти · E — рассмотреть',
   },
+  'hall.controlsTouch': {
+    en: 'Drag anywhere to walk · tap the name to open',
+    zh: '拖动屏幕行走 · 点按名称打开',
+    ru: 'Проведите пальцем, чтобы идти · коснитесь названия',
+  },
   'hall.scroll': {
     en: 'Scroll for the written index',
     zh: '向下滚动查看文字目录',

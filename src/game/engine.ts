@@ -133,13 +133,19 @@ export class Scene {
     this.canvas.width = this.w;
     this.canvas.height = this.h;
 
-    // Seventeen tiles of height. Fourteen was the first guess and the
-    // screenshot showed why it was wrong: at that zoom a chamber does not
-    // fit on screen, so the hall reads as a corridor and the figure reads as
-    // oversized. Seventeen puts a whole room plus the colonnade in frame
-    // while keeping the sprite big enough to have a face.
-    const target = cssH / (TILE * 17);
-    this.zoom = Math.max(1.2, Math.min(3, target));
+    /**
+     * Zoom is driven by whichever axis is tighter.
+     *
+     * Height alone was the first version, and on a phone it was unusable:
+     * a 430×932 viewport came out at 1.7, which is eight tiles across — the
+     * nave and nothing else, so the hall looked like a corridor and there
+     * was no way to tell a chamber existed. Seventeen tiles of height is
+     * the target where there is room for it, with a floor of ten tiles of
+     * width that takes over on anything narrow.
+     */
+    const byHeight = cssH / (TILE * 17);
+    const byWidth = cssW / (TILE * 10);
+    this.zoom = Math.max(1.2, Math.min(3, Math.min(byHeight, byWidth)));
     this.snapCamera();
   }
 

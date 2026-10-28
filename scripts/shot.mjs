@@ -116,12 +116,23 @@ try {
   await send('Page.enable');
   await send('Runtime.enable');
   await send('Log.enable');
+  const mobile = w < 600;
   await send('Emulation.setDeviceMetricsOverride', {
     width: w,
     height: h,
     deviceScaleFactor: 1,
-    mobile: w < 600,
+    mobile,
   });
+  // Device metrics alone do not change `(pointer: coarse)`, so a page that
+  // branches on it — the hall tells you to drag rather than press WASD —
+  // screenshots as the desktop variant and the check silently passes.
+  if (mobile) {
+    await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+    await send('Emulation.setEmitTouchEventsForMouse', {
+      enabled: true,
+      configuration: 'mobile',
+    });
+  }
   await send('Page.navigate', { url });
   await sleep(wait);
 

@@ -74,6 +74,13 @@ export function HallScene({ onOpen, paused }: Props) {
   const [stick, setStick] = useState<{ x: number; y: number } | null>(null);
   const { ui, tl } = useLocale();
 
+  // Telling someone on a phone to press WASD is the kind of detail that
+  // makes a page feel like it was never opened on one.
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    setTouch(window.matchMedia('(pointer: coarse)').matches);
+  }, []);
+
   // `near` has to be readable from the keydown handler without re-binding it
   // on every change, so it is mirrored into a ref.
   const nearRef = useRef<PlacedExhibit | null>(null);
@@ -201,9 +208,35 @@ export function HallScene({ onOpen, paused }: Props) {
   return (
     <div
       ref={wrapRef}
-      className="relative h-[100svh] w-full touch-none overflow-hidden bg-[#c9d6d8] select-none"
+      /*
+       * Pulled up under the header.
+       *
+       * `main` pads its top by `--header-h` to clear the fixed bar, so a
+       * plain `h-[100svh]` child is that much taller than the viewport and
+       * its bottom-anchored UI falls off the screen — which is exactly what
+       * happened to the controls hint on a phone. Cancelling the padding
+       * with a negative margin makes the scene actually full-bleed and lets
+       * the translucent header float over it, which is the look this page
+       * wanted anyway.
+       */
+      className="relative -mt-[var(--header-h)] h-[100svh] w-full touch-none overflow-hidden bg-[#c9d6d8] select-none"
     >
       <canvas ref={canvasRef} className="block h-full w-full" aria-hidden="true" />
+
+      {/*
+        Scrim under the header.
+
+        The site header is transparent at scroll zero on every page but the
+        home one, which is correct everywhere else — it sits on a white page.
+        Here it sits on a dark teal carpet, so its near-black text had nothing
+        to read against. A gradient fading out over the bar's own height fixes
+        it without special-casing the header for one route.
+      */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-surface/92 via-surface/55 to-transparent"
+        style={{ height: 'calc(var(--header-h) + 2.5rem)' }}
+        aria-hidden="true"
+      />
 
       {/* Touch surface. Separate from the canvas so the canvas stays inert. */}
       <div
@@ -224,39 +257,49 @@ export function HallScene({ onOpen, paused }: Props) {
         {near ? tl(near.title) : ''}
       </p>
 
-      {/* Controls hint, retired once the player has actually moved. */}
-      <div
-        className={[
-          // Clear of the site header, which floats over the scene.
-          'pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 transition-opacity duration-700 md:top-24',
-          state.moved ? 'opacity-0' : 'opacity-100',
-        ].join(' ')}
-      >
-        <p className="rounded-full bg-[#2b2a33]/82 px-4 py-2 text-[0.8125rem] font-medium text-[#f7efdd] shadow-lg backdrop-blur-sm">
-          {ui('hall.controls')}
-        </p>
-      </div>
+      {/*
+        Prompt and hint, stacked in one column anchored to the bottom.
 
-      {/* Interaction prompt. */}
-      <div
-        className={[
-          'pointer-events-none absolute bottom-24 left-1/2 -translate-x-1/2 transition-all duration-200',
-          near ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0',
-        ].join(' ')}
-      >
-        <button
-          type="button"
-          disabled={!near}
-          onClick={() => near && onOpen(near)}
-          className="pointer-events-auto flex items-center gap-3 rounded-full border border-[#c69a3f] bg-[#2b2a33]/90 py-2.5 pr-5 pl-3 text-[#f7efdd] shadow-xl backdrop-blur-sm"
+        Along the bottom rather than the top because at the top they have to
+        dodge the site header and the minimap, and on a 430px phone the hint
+        and the minimap simply overlapped. Stacked in a flex column rather
+        than positioned at two hand-picked offsets, because the hand-picked
+        version put the hint through the bottom edge of the viewport on the
+        first phone it met.
+      */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center gap-3 px-4">
+        <div
+          className={[
+            'transition-all duration-200',
+            near ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0',
+          ].join(' ')}
         >
-          <kbd className="rounded border border-[#c69a3f]/60 bg-[#c69a3f]/20 px-2 py-0.5 font-mono text-[0.75rem] text-[#f3dc94]">
-            E
-          </kbd>
-          <span className="font-display text-[0.9375rem] font-semibold">
-            {near ? tl(near.title) : ''}
-          </span>
-        </button>
+          <button
+            type="button"
+            disabled={!near}
+            onClick={() => near && onOpen(near)}
+            className="pointer-events-auto flex items-center gap-3 rounded-full border border-[#c69a3f] bg-[#2b2a33]/90 py-2.5 pr-5 pl-3 text-[#f7efdd] shadow-xl backdrop-blur-sm"
+          >
+            {/* The key cap is a lie on a phone — there is no E to press. */}
+            {!touch && (
+              <kbd className="rounded border border-[#c69a3f]/60 bg-[#c69a3f]/20 px-2 py-0.5 font-mono text-[0.75rem] text-[#f3dc94]">
+                E
+              </kbd>
+            )}
+            <span className="font-display text-[0.9375rem] font-semibold">
+              {near ? tl(near.title) : ''}
+            </span>
+          </button>
+        </div>
+
+        <p
+          className={[
+            'rounded-full bg-[#2b2a33]/82 px-4 py-2 text-center text-[0.8125rem] font-medium text-[#f7efdd] shadow-lg backdrop-blur-sm transition-opacity duration-700',
+            state.moved ? 'opacity-0' : 'opacity-100',
+          ].join(' ')}
+        >
+          {ui(touch ? 'hall.controlsTouch' : 'hall.controls')}
+        </p>
       </div>
 
       <Minimap scene={sceneRef} />
@@ -302,7 +345,15 @@ function Minimap({ scene }: { scene: React.RefObject<Scene | null> }) {
     return () => clearInterval(id);
   }, [scene]);
 
-  const W = 140;
+  // Narrow viewports get a smaller plan. At 140 px it took a third of the
+  // width of a phone screen and covered the hall it was describing.
+  const [W, setW] = useState(140);
+  useEffect(() => {
+    const fit = () => setW(window.innerWidth < 640 ? 84 : 140);
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
   const H = (W * MAP_H) / MAP_W;
 
   return (
