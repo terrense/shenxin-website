@@ -23,6 +23,12 @@ import type { ProjectCover } from './types';
  * Several also carry a `note`, because the badge alone is not enough when the
  * artwork actively contradicts the text beside it. See each entry.
  *
+ * The notes are translated into all three languages for the same reason the
+ * badge exists at all: a disclaimer that only appears in English is not a
+ * disclaimer for a reader using the Russian or Chinese interface, it is
+ * decoration. Alt text likewise — a screen reader user gets the image only
+ * through that string.
+ *
  * ---------------------------------------------------------------------------
  * DELIBERATELY NOT USED: `about-engineer-concept.webp`
  * ---------------------------------------------------------------------------
@@ -63,6 +69,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Simulated vineyard scene showing a grape cluster hanging beneath a trellis canopy.',
       zh: '仿真葡萄园场景：棚架树冠下悬垂的一串葡萄。',
+      ru: 'Сцена смоделированного виноградника: гроздь винограда, свисающая под пологом шпалеры.',
     },
   },
 
@@ -74,6 +81,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Two MATLAB figures showing GNSS/INS position and velocity error against GPS time on the east, north and up axes, each annotated with its RMS value.',
       zh: '两幅 MATLAB 图窗，展示 GNSS/INS 在东、北、天三轴上的定位与速度误差随 GPS 时间的变化，并各自标注 RMS 值。',
+      ru: 'Два графика MATLAB: ошибка положения и скорости ГНСС/ИНС по времени GPS на осях «восток», «север» и «вверх», каждый с подписанным значением СКО.',
     },
   },
 
@@ -84,6 +92,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'RViz showing a point-line visual-inertial SLAM session: red line landmarks, green point landmarks and the estimated pose-graph trajectory, with tracked feature images alongside.',
       zh: 'RViz 中的点线视觉惯性 SLAM 运行画面：红色线路标、绿色点路标与估计出的位姿图轨迹，旁侧为特征跟踪图像。',
+      ru: 'RViz с сеансом точечно-линейного визуально-инерциального SLAM: красные линейные ориентиры, зелёные точечные ориентиры и оценённая траектория графа поз, рядом — изображения с сопровождаемыми признаками.',
     },
   },
 
@@ -94,6 +103,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Annotated photograph of a collaborative robotic cell: a KUKA LBR iiwa 14 manipulator, two RGB-D cameras, a tray of medical instruments, an operator with a microphone, and the experimenter workstation.',
       zh: '协作机器人单元的标注照片：KUKA LBR iiwa 14 机械臂、两台 RGB-D 相机、一盘医疗器械、佩戴麦克风的操作者，以及实验员工作站。',
+      ru: 'Фотография коллаборативной роботизированной ячейки с подписями: манипулятор KUKA LBR iiwa 14, две RGB-D камеры, лоток с медицинскими инструментами, оператор с микрофоном и рабочее место экспериментатора.',
     },
   },
 
@@ -104,6 +114,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Architecture diagram of a diffusion-augmented PPO loop: data collection, virtual trajectory generation, diffusion model training and update, synthetic and augmented datasets, and the PPO actor–critic network.',
       zh: 'Diffusion 增强 PPO 闭环的架构图：数据采集、虚拟轨迹生成、扩散模型训练与更新、合成与扩充数据集，以及 PPO actor–critic 网络。',
+      ru: 'Схема архитектуры контура PPO с диффузионным дополнением: сбор данных, генерация виртуальных траекторий, обучение и обновление диффузионной модели, синтетические и расширенные наборы данных, сеть actor–critic PPO.',
     },
   },
 
@@ -114,10 +125,12 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Illustration of a robotics simulation environment showing a manipulator in a vineyard scene.',
       zh: '机器人仿真环境示意图，画面为葡萄园场景中的机械臂。',
+      ru: 'Иллюстрация среды моделирования робототехники: манипулятор в сцене виноградника.',
     },
     note: {
       en: 'Conceptual illustration in the style of a simulation platform — not a screenshot of Isaac Lab, and not this project’s scene.',
       zh: '仿真平台风格的概念示意图——并非 Isaac Lab 截图，也不是本项目的实际场景。',
+      ru: 'Концептуальная иллюстрация в стиле платформы моделирования — не скриншот Isaac Lab и не сцена этого проекта.',
     },
   },
 
@@ -128,10 +141,12 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Illustration of a model-training dashboard with loss curves and evaluation panels.',
       zh: '模型训练仪表盘示意图，包含损失曲线与评测面板。',
+      ru: 'Иллюстрация панели обучения модели с кривыми потерь и блоками оценки.',
     },
     note: {
       en: 'Conceptual dashboard. Every curve, score and counter shown is invented artwork, not a run from this pipeline.',
       zh: '概念仪表盘。画面中的所有曲线、分数与计数均为虚构，并非本流水线的实际运行结果。',
+      ru: 'Концептуальная панель. Все показанные кривые, оценки и счётчики — вымышленная графика, а не прогон этого конвейера.',
     },
   },
 
@@ -142,6 +157,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Illustration of a hand-eye calibration interface with a camera view, a 3D robot view and a results panel.',
       zh: '手眼标定界面示意图，包含相机视图、三维机器人视图与结果面板。',
+      ru: 'Иллюстрация интерфейса калибровки «рука — глаз»: вид с камеры, трёхмерный вид робота и панель результатов.',
     },
     // The artwork reads "Chessboard (8x6), 25.0 mm" and shows invented
     // transforms and device IPs. The case study states 11x8 at 20 mm. Without
@@ -149,6 +165,7 @@ export const projectCovers: Record<string, ProjectCover> = {
     note: {
       en: 'Conceptual interface, not the real Qt tool. The board size, transforms, error figures and device addresses shown are invented and differ from this project’s actual 11×8 / 20 mm setup.',
       zh: '概念界面，并非真实的 Qt 工具。画面中的标定板规格、变换矩阵、误差数值与设备地址均为虚构，与本项目实际的 11×8 / 20 mm 配置不一致。',
+      ru: 'Концептуальный интерфейс, а не реальный инструмент на Qt. Показанные размер доски, преобразования, значения ошибок и адреса устройств вымышлены и отличаются от фактической конфигурации проекта 11×8 / 20 мм.',
     },
   },
 
@@ -159,10 +176,12 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Illustration of a clinical assistant interface showing a draft note alongside source references.',
       zh: '临床助手界面示意图，左侧为草稿记录，右侧为来源引用。',
+      ru: 'Иллюстрация интерфейса клинического помощника: черновик записи рядом со ссылками на источники.',
     },
     note: {
       en: 'Fictional interface. Not a real hospital product, and no patient data of any kind is depicted.',
       zh: '虚构界面。并非任何医院的真实产品，画面中也不含任何患者数据。',
+      ru: 'Вымышленный интерфейс. Не реальный больничный продукт; никакие данные пациентов не изображены.',
     },
   },
 
@@ -173,10 +192,12 @@ export const projectCovers: Record<string, ProjectCover> = {
     alt: {
       en: 'Illustration of an agent runtime console showing an execution graph, tool calls and live logs.',
       zh: 'Agent 运行时控制台示意图，包含执行图、工具调用与实时日志。',
+      ru: 'Иллюстрация консоли агентной среды выполнения: граф исполнения, вызовы инструментов и живые логи.',
     },
     note: {
       en: 'Conceptual console. The task, success rate and counters shown are illustrative artwork, not real runtime state.',
       zh: '概念控制台。画面中的任务、成功率与各项计数均为示意，并非真实运行状态。',
+      ru: 'Концептуальная консоль. Показанные задача, доля успеха и счётчики — иллюстрация, а не реальное состояние среды выполнения.',
     },
   },
 };
