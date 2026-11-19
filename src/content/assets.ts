@@ -186,18 +186,13 @@ export const projectCovers: Record<string, ProjectCover> = {
   },
 
   lilbot: {
-    src: '/assets/lilbot-agent-dashboard-concept.webp',
-    thumb: '/assets/thumbnails/lilbot-agent-dashboard-concept.webp',
-    mediaKind: 'concept',
+    src: '/assets/real/lilbot-dashboard.webp',
+    thumb: '/assets/real/thumbnails/lilbot-dashboard.webp',
+    mediaKind: 'capture',
     alt: {
-      en: 'Illustration of an agent runtime console showing an execution graph, tool calls and live logs.',
-      zh: 'Agent 运行时控制台示意图，包含执行图、工具调用与实时日志。',
-      ru: 'Иллюстрация консоли агентной среды выполнения: граф исполнения, вызовы инструментов и живые логи.',
-    },
-    note: {
-      en: 'Conceptual console. The task, success rate and counters shown are illustrative artwork, not real runtime state.',
-      zh: '概念控制台。画面中的任务、成功率与各项计数均为示意，并非真实运行状态。',
-      ru: 'Концептуальная консоль. Показанные задача, доля успеха и счётчики — иллюстрация, а не реальное состояние среды выполнения.',
+      en: 'LilBot full-screen terminal dashboard with the agent panel, tool inventory, work panel, trace and composer.',
+      zh: 'LilBot 全屏终端 Dashboard：Agent 面板、工具清单、Work 面板、Trace 与 Composer。',
+      ru: 'Полноэкранный терминальный dashboard LilBot: панель агента, инвентарь инструментов, Work, Trace и composer.',
     },
   },
 };
