@@ -41,9 +41,9 @@ export const lilbot: Project = {
       },
     },
     {
-      value: '757',
+      value: '767',
       provenance: 'measured',
-      countTo: 757,
+      countTo: 767,
       label: { en: 'Tests passing', zh: '通过的测试', ru: 'Проходящих тестов' },
       detail: {
         en: '7 skipped; CI matrix on Python 3.10–3.13, Windows and Linux',
@@ -393,7 +393,7 @@ completed 1 steps
             {
               label: { en: 'Verification', zh: '验证', ru: 'Проверка' },
               body: {
-                en: '757 passing tests, an isolated mock/live evaluation harness with JSONL traces, a published baseline with failures, runtime micro-benchmarks, and a CI matrix across Python 3.10–3.13 on Windows and Linux.',
+                en: '767 passing tests, an isolated mock/live evaluation harness with JSONL traces, a published baseline with failures, runtime micro-benchmarks, and a CI matrix across Python 3.10–3.13 on Windows and Linux.',
                 zh: '656 个通过测试、隔离的 mock/live 评测工具与 JSONL trace、连同失败一起公开的基线、运行时微基准，以及覆盖 Python 3.10–3.13、Windows 与 Linux 的 CI 矩阵。',
                 ru: '656 проходящих тестов, изолированный mock/live evaluation harness с JSONL трассами, опубликованный baseline с отказами, микробенчмарки и CI-матрица Python 3.10–3.13 на Windows и Linux.',
               },
