@@ -41,9 +41,9 @@ export const lilbot: Project = {
       },
     },
     {
-      value: '792',
+      value: '819',
       provenance: 'measured',
-      countTo: 792,
+      countTo: 819,
       label: { en: 'Tests passing', zh: '通过的测试', ru: 'Проходящих тестов' },
       detail: {
         en: '7 skipped; CI matrix on Python 3.10–3.13, Windows and Linux',
@@ -153,9 +153,9 @@ export const lilbot: Project = {
             {
               label: { en: 'Context is a ladder', zh: '上下文是分级阶梯', ru: 'Контекст — лестница' },
               body: {
-                en: 'L0 replaces oversized tool results with previews; prune removes stale bodies; a structured summary handles the rest; session memory survives compaction; a bounded recovery chain handles real overflow. Token counts prefer provider-reported usage over character estimates.',
-                zh: 'L0 把过大的工具结果换成预览；裁剪清掉陈旧内容；结构化摘要处理剩余部分；会话记忆跨压缩存活；有界恢复链处理真正的溢出。token 计数优先用 Provider 回报的真实 usage，字符估算只做兜底。',
-                ru: 'L0 заменяет огромные результаты инструментов превью; prune убирает устаревшие тела; структурное резюме обрабатывает остальное; session memory переживает сжатие; ограниченная цепочка восстановления обрабатывает реальный overflow. Счёт токенов предпочитает usage от provider, а не оценку по символам.',
+                en: 'L0 replaces oversized tool results with previews; prune removes stale bodies; the maintained session notes become the handoff without a summary call at all; a structured summary is the last resort; a bounded recovery chain handles real overflow. Token counts prefer provider-reported usage over character estimates.',
+                zh: 'L0 把过大的工具结果换成预览；裁剪清掉陈旧内容；维护中的会话笔记直接当交接产物，完全不用调摘要模型；结构化摘要只是最后兜底；有界恢复链处理真正的溢出。token 计数优先用 Provider 回报的真实 usage，字符估算只做兜底。',
+                ru: 'L0 заменяет огромные результаты инструментов превью; prune убирает устаревшие тела; поддерживаемые заметки сессии сами становятся передачей, без вызова модели резюме; структурное резюме — крайняя мера; ограниченная цепочка восстановления обрабатывает реальный overflow. Счёт токенов предпочитает usage от provider, а не оценку по символам.',
               },
             },
             {
@@ -393,7 +393,7 @@ completed 1 steps
             {
               label: { en: 'Verification', zh: '验证', ru: 'Проверка' },
               body: {
-                en: '792 passing tests, an isolated mock/live evaluation harness with JSONL traces, a published baseline with failures, runtime micro-benchmarks, and a CI matrix across Python 3.10–3.13 on Windows and Linux.',
+                en: '819 passing tests, an isolated mock/live evaluation harness with JSONL traces, a published baseline with failures, runtime micro-benchmarks, and a CI matrix across Python 3.10–3.13 on Windows and Linux.',
                 zh: '656 个通过测试、隔离的 mock/live 评测工具与 JSONL trace、连同失败一起公开的基线、运行时微基准，以及覆盖 Python 3.10–3.13、Windows 与 Linux 的 CI 矩阵。',
                 ru: '656 проходящих тестов, изолированный mock/live evaluation harness с JSONL трассами, опубликованный baseline с отказами, микробенчмарки и CI-матрица Python 3.10–3.13 на Windows и Linux.',
               },
